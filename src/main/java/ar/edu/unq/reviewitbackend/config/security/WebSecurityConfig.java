@@ -14,15 +14,16 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 	@Configuration
 	public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 		
-		
 		@Override
-		protected void configure(HttpSecurity http) throws Exception {	  
+		protected void configure(HttpSecurity http) throws Exception {	
+			//Heroku
+			http.requiresChannel()
+			  .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
+			  .requiresSecure();
+			
 			http.authorizeRequests()
 				.antMatchers("/").permitAll();	
-		}
-		
-		
-
+		}	
 		
 	}
 	
