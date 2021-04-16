@@ -1,12 +1,11 @@
 package ar.edu.unq.reviewitbackend.entities;
 
-import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -18,24 +17,22 @@ import lombok.ToString;
 @Getter
 @Setter
 @Entity
-@SequenceGenerator(name = "SEQ_REVIEW", initialValue = 1, allocationSize = 1, sequenceName = "SEQ_REVIEW")
-public class Review extends Auditable<String> implements Serializable{
+@Table(name = "review", schema="public")
+@SequenceGenerator(name = "SEQ_REVIEW", initialValue = 1, allocationSize = 1, sequenceName = "SEQ_REVIEW", schema="public")
+public class Review /*extends Auditable<String>*/ {
 
-	private static final long serialVersionUID = 1L;
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_REVIEW")
 	private Long id;
 	
-	@NotBlank
-    @Size(max = 50)
-	private String title;
+//	@NotBlank
+//    @Size(max = 50)
+//	private String title;
 	
-	@NotBlank
-    @Size(max = 255)
-	private String description;
+//	@NotBlank
+//    @Size(max = 255)
+//	private String description;
 
-	private Integer points;
+//	private Integer points;
 	
-	public Review() {}
 }

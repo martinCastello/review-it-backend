@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  api_service:
+    build: .
+    restart: always
+    ports:
+      - 8083:8080
+    depends_on:
+      - maria_db
+    command: sh -c './wait-for mysql_db:3306 -- npm start'
+  maria_db:
+    image: "mariadb:10.5.8"
+    restart: always
+    ports:
+      - 3307:3306
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      MYSQL_DATABASE: reviewit
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
