@@ -39,7 +39,7 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 			predicates.add(cb.equal(root.get("id"), id));
 		}
 		if(description != null) {
-			predicates.add(cb.equal(root.get("status"), description));
+			predicates.add(cb.equal(root.get("description"), description));
 		}
 		if (predicates.isEmpty()) {
 			cr.select(root);

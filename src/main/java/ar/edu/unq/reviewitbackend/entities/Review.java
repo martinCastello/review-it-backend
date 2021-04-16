@@ -1,7 +1,5 @@
 package ar.edu.unq.reviewitbackend.entities;
 
-import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,9 +17,7 @@ import lombok.ToString;
 @Setter
 @Entity
 @SequenceGenerator(name = "SEQ_REVIEW", initialValue = 1, allocationSize = 1, sequenceName = "SEQ_REVIEW")
-public class Review extends Auditable<String> implements Serializable{
-
-	private static final long serialVersionUID = 1L;
+public class Review extends Auditable<String> {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_REVIEW")
@@ -37,5 +33,4 @@ public class Review extends Auditable<String> implements Serializable{
 
 	private Integer points;
 	
-	public Review() {}
 }
