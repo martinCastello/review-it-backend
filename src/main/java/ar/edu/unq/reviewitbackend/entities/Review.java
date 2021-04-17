@@ -33,4 +33,40 @@ public class Review extends Auditable<String> {
 
 	private Integer points;
 	
+	public Review () {}
+	
+	public Review(String title, String description, Integer points) {
+		this.setDescription(description);
+		this.setPoints(points);
+		this.setTitle(title);
+	}
+
+	public Long getId() {
+		return this.id;
+	}
+	
+	public String getTitle() {
+		return this.title;
+	}
+	
+	public String getDescrioption() {
+		return this.description;
+	}
+	
+	public Integer getPoints() {
+		return this.points;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	public void setPoints(Integer points) {
+		this.points = points;
+	}
+	
 }
