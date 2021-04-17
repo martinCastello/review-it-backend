@@ -2,7 +2,6 @@ package ar.edu.unq.reviewitbackend.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -86,13 +85,4 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	public List<DropdownInfo> findDropdownInfo() {
         return this.repository.findDropdownInfo();
     }
-	
-	public Optional<Review> findByID(Long id) {
-		try {
-			return this.repository.findById(id);
-		} catch (Exception e) {
-			return Optional.empty();
-		}
-
-	}
 }
