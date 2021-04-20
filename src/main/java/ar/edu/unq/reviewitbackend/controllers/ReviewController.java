@@ -39,12 +39,7 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 	}
 
 	@PostMapping("/save")
-	public ResponseEntity<?> createOrUpdate(@Validated @RequestBody Review entity, BindingResult result) {
-//		if (result.hasErrors()) {
-//			List<String> errors = result.getAllErrors().stream().map(e -> ((FieldError) e).getField() + " " + e.getDefaultMessage())
-//									.collect(Collectors.toList());
-//			return ResponseEntity.badRequest().body(new ErrorResponseBody(errors));
-//		}
+	public ResponseEntity<?> createOrUpdate(@RequestBody Review entity) {
 		Review oEntity = this.service.save(entity);
         return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
 	}
