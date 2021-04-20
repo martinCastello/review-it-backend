@@ -6,7 +6,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
@@ -32,8 +31,42 @@ public class Review extends Auditable<String> {
     @Size(max = 255)
 	private String description;
 
-	@NotNull
 	private Integer points;
 	
+	public Review () {}
+	
+	public Review(String title, String description, Integer points) {
+		this.setDescription(description);
+		this.setPoints(points);
+		this.setTitle(title);
+	}
+
+	public Long getId() {
+		return this.id;
+	}
+	
+	public String getTitle() {
+		return this.title;
+	}
+	
+	public String getDescrioption() {
+		return this.description;
+	}
+	
+	public Integer getPoints() {
+		return this.points;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	public void setPoints(Integer points) {
+		this.points = points;
+	}
 	
 }

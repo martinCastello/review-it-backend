@@ -1,15 +1,17 @@
 package ar.edu.unq.reviewitbackend.controllers;
 
+import javax.persistence.PostUpdate;
+
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
@@ -22,30 +24,17 @@ import lombok.extern.log4j.Log4j2;
 public class ReviewController extends CommonController<Review, ReviewService> {
 
 	@GetMapping
-	public ResponseEntity<?> getAll(Pagination pagination, 
-			@RequestParam(value = "description", required = false) String description,
-			@RequestParam(value = "points", required = false) Integer points) {
+	public ResponseEntity<?> getAll(Pagination pagination, @RequestParam(value = "id", required = false) Long id,
+			@RequestParam(value = "description", required = false) String description) {
 		log.debug("Paginación solicitada: " + pagination.toString());
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
-    	if (description != null && description.length() > 0) {
-    		if(points != null) {
-    			return ResponseEntity.ok(this.service.findAllByDescriptionAndPoints(description, points, pageRequest));
-    		}
-    		return ResponseEntity.ok(this.service.findAllByDescription(description, pageRequest));
-    	}
-    	if(points != null)
-    		return ResponseEntity.ok(this.service.findAllByPoints(points, pageRequest));
-        return ResponseEntity.ok(this.service.findAll(pageRequest));
+		return ResponseEntity.ok(this.service.findAll(pageRequest));
 	}
 
 	@PostMapping("/save")
-	public ResponseEntity<?> createOrUpdate(@Validated @RequestBody Review entity, BindingResult result) {
-//		if (result.hasErrors()) {
-//			List<String> errors = result.getAllErrors().stream().map(e -> ((FieldError) e).getField() + " " + e.getDefaultMessage())
-//									.collect(Collectors.toList());
-//			return ResponseEntity.badRequest().body(new ErrorResponseBody(errors));
-//		}
-		Review oEntity = this.service.save(entity);
-        return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
+	@CrossOrigin(origins = "*")
+	public ResponseEntity<Review> createOrUpdateReview(@RequestBody Review reviewBody) {
+		service.save(reviewBody);
+		return new ResponseEntity<Review>(reviewBody, HttpStatus.OK);
 	}
 }
