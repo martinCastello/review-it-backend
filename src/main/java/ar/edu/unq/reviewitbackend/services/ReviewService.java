@@ -6,8 +6,11 @@ import org.springframework.data.domain.Pageable;
 import ar.edu.unq.reviewitbackend.entities.Review;
 
 public interface ReviewService extends CommonService<Review>{
-	
 
-	Page<Review> findAll(Long id, String description, Pageable pageable);
+	Page<Review> findAllByDescription(String description, Pageable pageable);
+
+	Page<Review> findAllByPoints(Integer points, Pageable pageable);
+
+	Page<Review> findAllByDescriptionAndPoints(String description, Integer points, Pageable pageable);
 
 }

@@ -27,11 +27,20 @@ import lombok.extern.log4j.Log4j2;
 public class ReviewController extends CommonController<Review, ReviewService> {
 
 	@GetMapping
-	public ResponseEntity<?> getAll(Pagination pagination, @RequestParam(value = "id", required = false) Long id,
-			@RequestParam(value = "description", required = false) String description) {
+	public ResponseEntity<?> getAll(Pagination pagination, 
+			@RequestParam(value = "description", required = false) String description,
+			@RequestParam(value = "points", required = false) Integer points) {
 		log.debug("Paginación solicitada: " + pagination.toString());
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
-		return ResponseEntity.ok(this.service.findAll(id, description, pageRequest));
+    	if (description != null && description.length() > 0) {
+    		if(points != null) {
+    			return ResponseEntity.ok(this.service.findAllByDescriptionAndPoints(description, points, pageRequest));
+    		}
+    		return ResponseEntity.ok(this.service.findAllByDescription(description, pageRequest));
+    	}
+    	if(points != null)
+    		return ResponseEntity.ok(this.service.findAllByPoints(points, pageRequest));
+        return ResponseEntity.ok(this.service.findAll(pageRequest));
 	}
 
 	@PostMapping("/save")
