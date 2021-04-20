@@ -26,7 +26,7 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 	@GetMapping
 	public ResponseEntity<?> getAll(Pagination pagination, @RequestParam(value = "id", required = false) Long id,
 			@RequestParam(value = "description", required = false) String description) {
-		log.debug("Paginación solicitada: " + pagination.toString());
+//		log.debug("Paginación solicitada: " + pagination.toString());
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
 		return ResponseEntity.ok(this.service.findAll(pageRequest));
 	}
