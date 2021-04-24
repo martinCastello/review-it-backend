@@ -49,7 +49,7 @@ public class Review extends Auditable<String> {
 		return this.title;
 	}
 	
-	public String getDescrioption() {
+	public String getDescription() {
 		return this.description;
 	}
 	
