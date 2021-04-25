@@ -3,8 +3,11 @@ language: java
 services:
   - mysql
   
-before_install:
+before_script:
   - mysql -e 'DROP DATABASE IF EXISTS reviewit;'
   - mysql -e 'CREATE DATABASE reviewit;'
   - mysql -e 'use reviewit;'
   - mysql -u root reviewit < src/main/resources/database/review.sql;
+  
+before_install:
+  - chmod +x mvnw
