@@ -6,9 +6,6 @@ jdk:
 
 addons:
   mariadb: 10.4
-
-services:
-  - mysql
   
 before_script:
   - sudo mysql -e 'DROP DATABASE IF EXISTS reviewit;'
