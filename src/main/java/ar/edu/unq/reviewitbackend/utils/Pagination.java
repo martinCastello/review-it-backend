@@ -3,7 +3,6 @@ package ar.edu.unq.reviewitbackend.utils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,7 +10,6 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
-@AllArgsConstructor
 public class Pagination {
 
     private static final int DEFAULT_SIZE = 10;
