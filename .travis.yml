@@ -1,8 +1,6 @@
 language: java
-sudo: true
-dist: trusty
-addons:
-  mariadb: '10.0'
+jdk:
+  - openjdk11
 
 services:
   - mysql
