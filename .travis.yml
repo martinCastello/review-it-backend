@@ -1,5 +1,6 @@
 language: java
 sudo: true
+dist: precise
 jdk:
   - openjdk11
 
@@ -13,4 +14,4 @@ before_script:
   - sudo mysql -u root reviewit < src/main/resources/database/review.sql;
   
 before_install:
-  - chmod +x mvnw
+  - sudo chmod +x mvnw
