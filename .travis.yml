@@ -4,6 +4,9 @@ dist: precise
 jdk:
   - openjdk11
 
+addons:
+  mariadb: 10.4
+
 services:
   - mysql
   
