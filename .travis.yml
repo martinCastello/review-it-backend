@@ -7,3 +7,4 @@ before_script:
   - mysql -e 'DROP DATABASE IF EXISTS reviewit;'
   - mysql -e 'CREATE DATABASE reviewit;'
   - mysql -e 'use reviewit;'
+  - mysql -u root reviewit < src/main/resources/database/review.sql;
