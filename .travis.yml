@@ -3,7 +3,7 @@ language: java
 services:
   - mysql
   
-before_script:
+before_install:
   - mysql -e 'DROP DATABASE IF EXISTS reviewit;'
   - mysql -e 'CREATE DATABASE reviewit;'
   - mysql -e 'use reviewit;'
