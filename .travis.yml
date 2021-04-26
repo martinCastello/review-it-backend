@@ -1,4 +1,6 @@
 language: java
+jdk:
+  - openjdk11
 
 services:
   - mysql
@@ -7,3 +9,9 @@ before_script:
   - mysql -e 'DROP DATABASE IF EXISTS reviewit;'
   - mysql -e 'CREATE DATABASE reviewit;'
   - mysql -e 'use reviewit;'
+  
+before_install:
+  - chmod +x mvnw
+  
+script:
+- ./mvnw clean test -B -Dspring.profiles.active=travis
