@@ -7,10 +7,14 @@ import ar.edu.unq.reviewitbackend.entities.User;
 
 public interface UserService extends CommonService<User>{
 
-	Page<User> findAllByDescription(String description, Pageable pageable);
+	Page<User> findAllByName(String name, Pageable pageable);
 
-	Page<User> findAllByPoints(Integer points, Pageable pageable);
+	Page<User> findAllByLastName(String lastName, Pageable pageable);
+	
+	Page<User> findAllByEmail(String email, Pageable pageable);
+	
+	Page<User> findAllByUserName(String userName, Pageable pageable);
 
-	Page<User> findAllByDescriptionAndPoints(String description, Integer points, Pageable pageable);
+	Page<User> findAllByNameAndLastName(String name, String lastName, Pageable pageable);
 
 }

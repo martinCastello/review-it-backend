@@ -17,10 +17,14 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	@Query("select new ar.edu.unq.reviewitbackend.dto.DropdownInfo( u.id ) FROM User u")
 	List<DropdownInfo> findDropdownInfo();
 
-	Page<User> findAllByDescription(String description, Pageable pageable);
+	Page<User> findAllByName(String name, Pageable pageable);
 
-	Page<User> findAllByPoints(Integer points, Pageable pageable);
+	Page<User> findAllByLastName(String lastName, Pageable pageable);
+	
+	Page<User> findAllByEmail(String email, Pageable pageable);
+	
+	Page<User> findAllByUserName(String userName, Pageable pageable);
 
-	Page<User> findAllByDescriptionAndPoints(String description, Integer points, Pageable pageable);
+	Page<User> findAllByNameAndLastName(String name, String lastName, Pageable pageable);
 
 }

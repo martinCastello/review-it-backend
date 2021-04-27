@@ -18,16 +18,24 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 		return this.repository.findAll(pageable);
 	}
 
-	public Page<User> findAllByDescription(String description, Pageable pageable) {
-		return this.repository.findAllByDescription(description, pageable);
+	public Page<User> findAllByName(String name, Pageable pageable) {
+		return this.repository.findAllByName(name, pageable);
 	}
 	
-	public Page<User> findAllByPoints(Integer points, Pageable pageable) {
-		return this.repository.findAllByPoints(points, pageable);
+	public Page<User> findAllByLastName(String lastName, Pageable pageable) {
+		return this.repository.findAllByLastName(lastName, pageable);
+	}
+	
+	public Page<User> findAllByEmail(String email, Pageable pageable) {
+		return this.repository.findAllByEmail(email, pageable);
+	}
+	
+	public Page<User> findAllByUserName(String userName, Pageable pageable) {
+		return this.repository.findAllByUserName(userName, pageable);
 	}
 
-	public Page<User> findAllByDescriptionAndPoints(String description, Integer points, Pageable pageable) {
-		return this.repository.findAllByDescriptionAndPoints(description, points, pageable);
+	public Page<User> findAllByNameAndLastName(String name, String lastName, Pageable pageable) {
+		return this.repository.findAllByNameAndLastName(name, lastName, pageable);
 	}
 	
 	public List<DropdownInfo> findDropdownInfo() {
