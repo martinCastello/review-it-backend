@@ -17,6 +17,16 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	public Page<Review> findAll(Pageable pageable) {
 		return this.repository.findAll(pageable);
 	}
+
+	public Page<Review> findAllBySearch(String search, Pageable pageable){
+		int searchNumber = 0;
+		try{
+			searchNumber = Integer.valueOf(search);
+		}catch (Exception e) {
+			searchNumber = 0;
+		}
+		return this.repository.findAllByTitleOrDescriptionOrPointsOrUserId(search, search, Integer.valueOf(searchNumber), Long.valueOf(searchNumber), pageable);
+	}
 	
 	public Page<Review> findAllByTitle(String title, Pageable pageable) {
 		return this.repository.findAllByTitle(title, pageable);

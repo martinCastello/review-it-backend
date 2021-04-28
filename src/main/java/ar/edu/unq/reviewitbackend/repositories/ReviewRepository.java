@@ -32,4 +32,7 @@ Page<Review> findAllByTitle(String title, Pageable pageable);
 	Page<Review> findAllByTitleAndDescriptionAndPoints(String title, String description, Integer points,
 			Pageable pageable);
 
+	Page<Review> findAllByTitleOrDescriptionOrPointsOrUserId(String search, String search2, Integer search3, Long search4,
+			Pageable pageable);
+
 }

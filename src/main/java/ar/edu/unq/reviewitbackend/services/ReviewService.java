@@ -22,4 +22,6 @@ public interface ReviewService extends CommonService<Review>{
 	Page<Review> findAllByTitleAndDescriptionAndPoints(String title, String description, Integer points,
 			Pageable pageable);
 
+	Page<Review> findAllBySearch(String search, Pageable pageable);
+
 }
