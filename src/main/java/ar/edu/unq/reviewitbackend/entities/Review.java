@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.ToString;
@@ -32,7 +33,7 @@ public class Review extends Auditable<String> {
 	private Integer points;
 	
 	@OneToOne
-	@JoinColumn(name = "userId", referencedColumnName = "id")
+	@NotNull
 	private User user;
 	
 	public Review () {}
