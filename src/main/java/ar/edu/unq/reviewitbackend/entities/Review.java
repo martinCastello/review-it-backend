@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -29,12 +31,17 @@ public class Review extends Auditable<String> {
 
 	private Integer points;
 	
+	@OneToOne
+	@JoinColumn(name = "userId", referencedColumnName = "id")
+	private User user;
+	
 	public Review () {}
 	
-	public Review(String title, String description, Integer points) {
+	public Review(String title, String description, Integer points, User user) {
 		this.setDescription(description);
 		this.setPoints(points);
 		this.setTitle(title);
+		this.setUser(user);
 	}
 
 	public Long getId() {
@@ -53,6 +60,10 @@ public class Review extends Auditable<String> {
 		return this.points;
 	}
 	
+	public User getUser() {
+		return this.user;
+	}
+	
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -63,6 +74,10 @@ public class Review extends Auditable<String> {
 	
 	public void setPoints(Integer points) {
 		this.points = points;
+	}
+	
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 }

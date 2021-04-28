@@ -18,7 +18,8 @@ import lombok.extern.log4j.Log4j2;
 public class UserController extends CommonController<User, UserService> {
 
 	@GetMapping
-	public ResponseEntity<?> getAll(Pagination pagination, @RequestParam(value = "id", required = false) Long id,
+	public ResponseEntity<?> getAll(Pagination pagination, 
+			@RequestParam(value = "id", required = false) Long id,
 			@RequestParam(value = "userName", required = false) String userName) {
 		log.debug("Paginación solicitada: " + pagination.toString());
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
