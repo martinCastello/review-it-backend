@@ -15,7 +15,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @SequenceGenerator(name = "SEQ_REVIEW", initialValue = 1, allocationSize = 1, sequenceName = "SEQ_REVIEW")
-public class Review extends Auditable<String> {
+public class Review extends Auditable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_REVIEW")
