@@ -4,20 +4,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 @ToString
-@Getter
-@Setter
 @Entity
 @SequenceGenerator(name = "SEQ_REVIEW", initialValue = 1, allocationSize = 1, sequenceName = "SEQ_REVIEW")
-public class Review extends Auditable<String> {
+public class Review extends Auditable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_REVIEW")
@@ -31,14 +29,20 @@ public class Review extends Auditable<String> {
     @Size(max = 255)
 	private String description;
 
+	@NotNull
 	private Integer points;
+	
+	@NotNull
+	@ManyToOne
+	private User user;
 	
 	public Review () {}
 	
-	public Review(String title, String description, Integer points) {
+	public Review(String title, String description, Integer points, User user) {
 		this.setDescription(description);
 		this.setPoints(points);
 		this.setTitle(title);
+		this.setUser(user);
 	}
 
 	public Long getId() {
@@ -57,6 +61,10 @@ public class Review extends Auditable<String> {
 		return this.points;
 	}
 	
+	public User getUser() {
+		return this.user;
+	}
+	
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -67,6 +75,10 @@ public class Review extends Auditable<String> {
 	
 	public void setPoints(Integer points) {
 		this.points = points;
+	}
+	
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 }

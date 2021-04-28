@@ -17,6 +17,10 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	public Page<Review> findAll(Pageable pageable) {
 		return this.repository.findAll(pageable);
 	}
+	
+	public Page<Review> findAllByTitle(String title, Pageable pageable) {
+		return this.repository.findAllByTitle(title, pageable);
+	}
 
 	public Page<Review> findAllByDescription(String description, Pageable pageable) {
 		return this.repository.findAllByDescription(description, pageable);
@@ -26,8 +30,21 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 		return this.repository.findAllByPoints(points, pageable);
 	}
 
+	public Page<Review> findAllByTitleAndDescription(String title, String description, Pageable pageable) {
+		return this.repository.findAllByTitleAndDescription(title, description, pageable);
+	}
+
+	public Page<Review> findAllByTitleAndPoints(String title, Integer points, Pageable pageable) {
+		return this.repository.findAllByTitleAndPoints(title, points, pageable);
+	}
+	
 	public Page<Review> findAllByDescriptionAndPoints(String description, Integer points, Pageable pageable) {
 		return this.repository.findAllByDescriptionAndPoints(description, points, pageable);
+	}
+
+	public Page<Review> findAllByTitleAndDescriptionAndPoints(String title, String description, Integer points,
+			Pageable pageable) {
+		return this.repository.findAllByTitleAndDescriptionAndPoints(title, description, points, pageable);
 	}
 	
 	public List<DropdownInfo> findDropdownInfo() {
