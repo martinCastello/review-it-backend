@@ -1,5 +1,8 @@
 package ar.edu.unq.reviewitbackend.controllers;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ar.edu.unq.reviewitbackend.dto.ReviewDto;
 import ar.edu.unq.reviewitbackend.entities.Review;
+import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
+import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
 import lombok.extern.log4j.Log4j2;
 
@@ -19,6 +25,9 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/reviews")
 public class ReviewController extends CommonController<Review, ReviewService> {
 
+	@Autowired
+	UserService userService;
+	
 	@GetMapping
 	public ResponseEntity<?> getAll(Pagination pagination,
 			@RequestParam(value = "title", required = false) String title,
@@ -48,7 +57,12 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 	}
 
 	@PostMapping("/save")
-	public ResponseEntity<?> createOrUpdateReview(@RequestBody Review entity) {
+	public ResponseEntity<?> createOrUpdateReview(@RequestBody ReviewDto dto) {
+		Review entity = null;
+		Optional<User> oUser = userService.findById(dto.getUserId());
+		if(oUser.isPresent()) {
+			entity = new Review(dto.getTitle(), dto.getDescription(), dto.getPoints(), oUser.get()); 
+		}
 		Review oEntity = service.save(entity);
 		return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
 	}

@@ -29,6 +29,7 @@ public class Review extends Auditable {
     @Size(max = 255)
 	private String description;
 
+	@NotNull
 	private Integer points;
 	
 	@NotNull
