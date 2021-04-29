@@ -14,7 +14,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @SequenceGenerator(name = "SEQ_USER", initialValue = 1, allocationSize = 1, sequenceName = "SEQ_USER")
-public class User{
+public class User extends Auditable{
     @Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_USER")
 	private Long id;
@@ -41,6 +41,7 @@ public class User{
 	@NotBlank
     @Size(max = 255)
 	private String password;
+
 	
 	public User () {}
 	
@@ -51,6 +52,10 @@ public class User{
         this.userName = nickname;
         this.password = password;
     }
+	
+	public Long getId() {
+		return this.id;
+	}
 
 	public String getName() {
 		return this.name;
@@ -91,5 +96,7 @@ public class User{
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	
 
 }
