@@ -1,10 +1,16 @@
 package ar.edu.unq.reviewitbackend.controllers;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ar.edu.unq.reviewitbackend.dto.ReviewDto;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
@@ -68,13 +73,24 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 	}
 
 	@PostMapping("/save")
-	public ResponseEntity<?> createOrUpdateReview(@RequestBody ReviewDto dto) {
-		Review entity = null;
-		Optional<User> oUser = userService.findById(dto.getUserId());
-		if(oUser.isPresent()) {
-			entity = new Review(dto.getTitle(), dto.getDescription(), dto.getPoints(), oUser.get()); 
+	public ResponseEntity<?> createOrUpdate(@Valid @RequestBody Review entity, BindingResult result) {
+		if(result.hasErrors()) {
+			return this.validar(result);
 		}
+		Optional<User> oUser = this.userService.findById(entity.getUserId());
+		if(oUser.isEmpty())
+			return ResponseEntity.notFound().build();
 		Review oEntity = service.save(entity);
 		return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
 	}
+	
+	protected ResponseEntity<?> validar(BindingResult result){
+		Map<String, Object> errores = new HashMap<>();
+		result.getAllErrors().forEach(err -> {
+				errores.put(((FieldError) err).getField(), "El campo " + ((FieldError) err).getField() + " " + err.getDefaultMessage());
+		});
+		return ResponseEntity.badRequest().body(errores);
+	}
+	
+	
 }

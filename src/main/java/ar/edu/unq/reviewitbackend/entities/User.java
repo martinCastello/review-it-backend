@@ -1,10 +1,15 @@
 package ar.edu.unq.reviewitbackend.entities;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -14,7 +19,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @SequenceGenerator(name = "SEQ_USER", initialValue = 1, allocationSize = 1, sequenceName = "SEQ_USER")
-public class User{
+public class User extends Auditable{
     @Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_USER")
 	private Long id;
@@ -41,6 +46,10 @@ public class User{
 	@NotBlank
     @Size(max = 255)
 	private String password;
+
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name="user_id", referencedColumnName="id")
+	private List<Review> reviews;
 	
 	public User () {}
 	
@@ -51,6 +60,10 @@ public class User{
         this.userName = nickname;
         this.password = password;
     }
+	
+	public Long getId() {
+		return this.id;
+	}
 
 	public String getName() {
 		return this.name;
@@ -91,5 +104,11 @@ public class User{
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public void add(Review review) {
+		this.reviews.add(review);
+	}
+
+	
 
 }
