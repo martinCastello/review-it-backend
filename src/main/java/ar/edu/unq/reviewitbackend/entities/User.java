@@ -1,10 +1,15 @@
 package ar.edu.unq.reviewitbackend.entities;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -42,6 +47,9 @@ public class User extends Auditable{
     @Size(max = 255)
 	private String password;
 
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name="user_id", referencedColumnName="id")
+	private List<Review> reviews;
 	
 	public User () {}
 	
@@ -95,6 +103,10 @@ public class User extends Auditable{
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public void add(Review review) {
+		this.reviews.add(review);
 	}
 
 	
