@@ -1,6 +1,7 @@
 package ar.edu.unq.reviewitbackend.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,5 +27,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	Page<User> findAllByUserName(String userName, Pageable pageable);
 
 	Page<User> findAllByNameAndLastName(String name, String lastName, Pageable pageable);
+
+	Optional<User> findByUserNameOrEmail(String userName, String email);
 
 }

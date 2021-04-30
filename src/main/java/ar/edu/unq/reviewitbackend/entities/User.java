@@ -29,7 +29,6 @@ public class User extends Auditable{
 	private String name;
 	
 	
-	@NotBlank
     @Size(max = 50)
 	@Column(name = "last_name")
 	private String lastName;
@@ -50,6 +49,8 @@ public class User extends Auditable{
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name="user_id", referencedColumnName="id")
 	private List<Review> reviews;
+	
+	private String avatar;
 	
 	public User () {}
 	

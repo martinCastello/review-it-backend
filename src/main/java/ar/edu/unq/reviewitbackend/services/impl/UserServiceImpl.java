@@ -41,5 +41,9 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 	public List<DropdownInfo> findDropdownInfo() {
         return this.repository.findDropdownInfo();
     }
+
+	public Boolean exist(String userName, String email) {
+		return this.repository.findByUserNameOrEmail(userName, email).isPresent();
+	}
 	
 }
