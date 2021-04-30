@@ -8,9 +8,11 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +29,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping(path="/reviews")
 public class ReviewController extends CommonController<Review, ReviewService> {
 
 	@Autowired

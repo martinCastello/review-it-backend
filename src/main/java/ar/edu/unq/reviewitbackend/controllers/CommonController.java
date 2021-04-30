@@ -2,6 +2,7 @@ package ar.edu.unq.reviewitbackend.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import ar.edu.unq.reviewitbackend.services.CommonService;
