@@ -38,7 +38,7 @@ public class User extends Auditable{
 	private String email;
 	
 	@NotBlank
-    @Size(max = 255)
+    @Size(max = 50)
 	@Column(name = "user_name")
 	private String userName;
 	
@@ -50,6 +50,7 @@ public class User extends Auditable{
 	@JoinColumn(name="user_id", referencedColumnName="id")
 	private List<Review> reviews;
 	
+	@Size(max = 255)
 	private String avatar;
 	
 	public User () {}
@@ -86,6 +87,10 @@ public class User extends Auditable{
 		return this.password;
 	}
 	
+	public String getAvatar() {
+		return this.avatar;
+	}
+	
 	public void setLastName(String lastname) {
 		this.lastName = lastname;
 	}
@@ -104,6 +109,10 @@ public class User extends Auditable{
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	public void add(Review review) {
