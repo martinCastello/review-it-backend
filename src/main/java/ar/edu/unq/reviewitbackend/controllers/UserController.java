@@ -1,6 +1,9 @@
 package ar.edu.unq.reviewitbackend.controllers;
 
+import javax.validation.Valid;
+
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,5 +35,18 @@ public class UserController extends CommonController<User, UserService> {
 	public ResponseEntity<?> createOrUpdateReview(@RequestBody User entity) {
 		User oEntity = service.save(entity);
 		return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
+	}
+	
+	@PostMapping("/signUp")
+	public ResponseEntity<?> singUp(@Valid @RequestBody User user) {
+
+		var alreadyExist = this.service.exist(user.getUserName(), user.getEmail());
+
+		if (alreadyExist) {
+			return ResponseEntity.status(HttpStatus.FOUND).build();
+		} else {
+			User oEntity = this.service.save(user);
+			return oEntity == null ? ResponseEntity.badRequest().build() :ResponseEntity.status(HttpStatus.CREATED).body(oEntity);
+		}
 	}
 }

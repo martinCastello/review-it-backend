@@ -27,7 +27,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping(path="/reviews")
 public class ReviewController extends CommonController<Review, ReviewService> {
 
 	@Autowired

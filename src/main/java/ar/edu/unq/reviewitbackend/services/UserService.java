@@ -17,4 +17,6 @@ public interface UserService extends CommonService<User>{
 
 	Page<User> findAllByNameAndLastName(String name, String lastName, Pageable pageable);
 
+	Boolean exist(String userName, String email);
+
 }
