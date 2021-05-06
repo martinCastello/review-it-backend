@@ -1,6 +1,7 @@
 package ar.edu.unq.reviewitbackend.services.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,6 +45,10 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 
 	public Boolean exist(String userName, String email) {
 		return this.repository.findByUserNameOrEmail(userName, email).isPresent();
+	}
+
+	public Optional<User> findByUserNameAndEmail(String userName, String email) {
+		return this.repository.findByUserNameAndEmail(userName, email);
 	}
 	
 }

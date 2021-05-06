@@ -1,10 +1,16 @@
 package ar.edu.unq.reviewitbackend.controllers;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,22 +37,39 @@ public class UserController extends CommonController<User, UserService> {
 		return ResponseEntity.ok(this.service.findAll(pageRequest));
 	}
 	
-	@PostMapping("/save")
-	public ResponseEntity<?> createOrUpdateReview(@RequestBody User entity) {
-		User oEntity = service.save(entity);
-		return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
-	}
-	
 	@PostMapping("/signUp")
 	public ResponseEntity<?> singUp(@Valid @RequestBody User user) {
 
-		var alreadyExist = this.service.exist(user.getUserName(), user.getEmail());
+		Optional<User> oUser = this.service.findByUserNameAndEmail(user.getUserName(), user.getEmail());
 
-		if (alreadyExist) {
-			return ResponseEntity.status(HttpStatus.FOUND).build();
+		if (oUser.isPresent()) {
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(oUser.get());
 		} else {
 			User oEntity = this.service.save(user);
 			return oEntity == null ? ResponseEntity.badRequest().build() :ResponseEntity.status(HttpStatus.CREATED).body(oEntity);
 		}
+	}
+	
+	@PostMapping("/save")
+	public ResponseEntity<?> update(@Valid @RequestBody User entity, BindingResult result) {
+		if(result.hasErrors()) {
+			return this.validar(result);
+		}
+		User oEntity = service.save(entity);
+		return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
+	}
+	
+	protected ResponseEntity<?> validar(BindingResult result){
+		Map<String, Object> errores = new HashMap<>();
+		result.getAllErrors().forEach(err -> {
+				errores.put(((FieldError) err).getField(), "El campo " + ((FieldError) err).getField() + " " + err.getDefaultMessage());
+		});
+		return ResponseEntity.badRequest().body(errores);
+	}
+	
+	@PostMapping("/info")
+	public ResponseEntity<?> get(@RequestBody Long id) {
+		Optional<User> oUser = this.service.findById(id);
+		return oUser.isPresent() ? ResponseEntity.status(HttpStatus.ACCEPTED).body(oUser.get()) : ResponseEntity.badRequest().build();
 	}
 }

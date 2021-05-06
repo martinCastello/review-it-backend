@@ -1,11 +1,14 @@
 package ar.edu.unq.reviewitbackend.entities;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -32,8 +35,13 @@ public class Review extends Auditable {
 	@NotNull
 	private Integer points;
 	
-	@NotNull
-	@Column(name="user_id")
+	private String category;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_Id", referencedColumnName = "id")
+	private User user;
+	
+	@Transient
 	private Long userId;
 	
 	public Review () {}
@@ -42,7 +50,7 @@ public class Review extends Auditable {
 		this.setDescription(description);
 		this.setPoints(points);
 		this.setTitle(title);
-		this.setUserId(user.getId());
+		this.setUser(user);
 	}
 
 	public Long getId() {
@@ -61,8 +69,8 @@ public class Review extends Auditable {
 		return this.points;
 	}
 	
-	public Long getUserId() {
-		return this.userId;
+	public User getUser() {
+		return this.user;
 	}
 	
 	public void setTitle(String title) {
@@ -77,8 +85,12 @@ public class Review extends Auditable {
 		this.points = points;
 	}
 	
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Long getUserId() {
+		return this.userId;
 	}
 	
 	

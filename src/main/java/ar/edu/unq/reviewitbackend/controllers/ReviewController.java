@@ -80,6 +80,7 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 		Optional<User> oUser = this.userService.findById(entity.getUserId());
 		if(oUser.isEmpty())
 			return ResponseEntity.notFound().build();
+		entity.setUser(oUser.get());
 		Review oEntity = service.save(entity);
 		return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
 	}
