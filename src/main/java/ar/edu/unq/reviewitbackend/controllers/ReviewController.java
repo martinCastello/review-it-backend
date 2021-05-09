@@ -29,47 +29,20 @@ import lombok.extern.log4j.Log4j2;
 @RestController
 @RequestMapping(path="/reviews")
 public class ReviewController extends CommonController<Review, ReviewService> {
-
+	
 	@Autowired
-	UserService userService;
+	private UserService userService;
 	
 	@GetMapping
 	public ResponseEntity<?> getAllBy(Pagination pagination,
+			@RequestParam(value = "search", required = false) String inAll,
 			@RequestParam(value = "title", required = false) String title,
 			@RequestParam(value = "description", required = false) String description,
-			@RequestParam(value = "points", required = false) Integer points) {
+			@RequestParam(value = "points", required = false) Integer points,
+			@RequestParam(value = "userName", required = false) String userName) {
 		log.debug("Paginación solicitada: " + pagination.toString());
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
-		if(title != null && title.length() > 0) {
-			if (description != null && description.length() > 0) {
-	    		if(points != null) {
-	    			return ResponseEntity.ok(this.service.findAllByTitleAndDescriptionAndPoints(title, description, points, pageRequest));
-	    		}
-	    		return ResponseEntity.ok(this.service.findAllByTitleAndDescription(title, description, pageRequest));
-	    	}
-	    	if(points != null)
-	    		return ResponseEntity.ok(this.service.findAllByTitleAndPoints(title, points, pageRequest));
-	        return ResponseEntity.ok(this.service.findAllByTitle(title, pageRequest));
-		}else if (description != null && description.length() > 0) {
-    		if(points != null) {
-    			return ResponseEntity.ok(this.service.findAllByDescriptionAndPoints(description, points, pageRequest));
-    		}
-    		return ResponseEntity.ok(this.service.findAllByDescription(description, pageRequest));
-    	}
-    	if(points != null)
-    		return ResponseEntity.ok(this.service.findAllByPoints(points, pageRequest));
-        return ResponseEntity.ok(this.service.findAll(pageRequest));
-	}
-	
-	@GetMapping("/search")
-	public ResponseEntity<?> getAll(Pagination pagination,
-			@RequestParam(value = "search", required = false) String search) {
-		log.debug("Paginación solicitada: " + pagination.toString());
-		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
-		if(search != null && search.length() > 0) {
-			return ResponseEntity.ok(this.service.findAllBySearch(search, pageRequest));
-		}
-        return ResponseEntity.ok(this.service.findAll(pageRequest));
+		return ResponseEntity.ok(this.service.findAll(inAll, title, description, points, userName, pageRequest));
 	}
 
 	@PostMapping("/save")
