@@ -7,6 +7,8 @@ import ar.edu.unq.reviewitbackend.entities.Review;
 
 public interface ReviewService extends CommonService<Review>{
 
+	Page<Review> findAll(String inAll, String title, String description, Integer points, String userName, Pageable pageable);
+	
 	Page<Review> findAllByTitle(String title, Pageable pageable);
 	
 	Page<Review> findAllByDescription(String description, Pageable pageable);

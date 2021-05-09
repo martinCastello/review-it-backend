@@ -23,4 +23,6 @@ public interface UserService extends CommonService<User>{
 
 	Optional<User> findByUserNameAndEmail(String userName, String email);
 
+	Optional<User> findByUserName(String search);
+
 }
