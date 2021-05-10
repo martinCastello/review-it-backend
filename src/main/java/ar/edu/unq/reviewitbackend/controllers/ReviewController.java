@@ -38,7 +38,7 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 			@RequestParam(value = "title", required = false) String title,
 			@RequestParam(value = "description", required = false) String description,
 			@RequestParam(value = "points", required = false) Integer points) {
-		log.debug("Paginación solicitada: " + pagination.toString());
+		// log.debug("Paginación solicitada: " + pagination.toString());
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
 		if(title != null && title.length() > 0) {
 			if (description != null && description.length() > 0) {
@@ -64,7 +64,7 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 	@GetMapping("/search")
 	public ResponseEntity<?> getAll(Pagination pagination,
 			@RequestParam(value = "search", required = false) String search) {
-		log.debug("Paginación solicitada: " + pagination.toString());
+		// log.debug("Paginación solicitada: " + pagination.toString());
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
 		if(search != null && search.length() > 0) {
 			return ResponseEntity.ok(this.service.findAllBySearch(search, pageRequest));
