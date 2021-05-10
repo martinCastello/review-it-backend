@@ -61,7 +61,7 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 	protected ResponseEntity<?> validar(BindingResult result){
 		Map<String, Object> errores = new HashMap<>();
 		result.getAllErrors().forEach(err -> {
-				errores.put(((FieldError) err).getField(), "El campo " + ((FieldError) err).getField() + " " + err.getDefaultMessage());
+				errores.put(((FieldError) err).getField(), err.getDefaultMessage());
 		});
 		return ResponseEntity.badRequest().body(errores);
 	}
