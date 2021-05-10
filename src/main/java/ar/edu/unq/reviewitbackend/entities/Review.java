@@ -24,15 +24,15 @@ public class Review extends Auditable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_REVIEW")
 	private Long id;
 	
-	@NotBlank
+	@NotBlank(message = "Debe completar con el titulo de la pelicula")
     @Size(max = 50)
 	private String title;
 	
-	@NotBlank
+	@NotBlank(message = "Debe dejar una opinión sobre la pelicula")
     @Size(max = 255)
 	private String description;
 
-	@NotNull
+	@NotNull(message = "Debe puntuar a la pelicula")
 	private Integer points;
 	
 	private String category;
