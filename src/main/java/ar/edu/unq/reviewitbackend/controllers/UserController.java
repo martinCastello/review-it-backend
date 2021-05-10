@@ -40,7 +40,7 @@ public class UserController extends CommonController<User, UserService> {
 	@PostMapping("/signUp")
 	public ResponseEntity<?> singUp(@Valid @RequestBody User user) {
 
-		Optional<User> oUser = this.service.findByUserNameAndEmail(user.getUserName(), user.getEmail());
+		Optional<User> oUser = this.service.findByUserName(user.getUserName());
 
 		if (oUser.isPresent()) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(oUser.get());

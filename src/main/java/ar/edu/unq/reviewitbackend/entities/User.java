@@ -28,7 +28,6 @@ public class User extends Auditable{
 	@Column(name = "last_name")
 	private String lastName;
 	
-	@NotBlank
     @Size(max = 255)
 	private String email;
 	

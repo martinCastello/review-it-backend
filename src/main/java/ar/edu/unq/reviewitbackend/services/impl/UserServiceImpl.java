@@ -50,5 +50,9 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 	public Optional<User> findByUserNameAndEmail(String userName, String email) {
 		return this.repository.findByUserNameAndEmail(userName, email);
 	}
+
+	public Optional<User> findByUserName(String userName) {
+		return this.repository.findByUserName(userName);
+	}
 	
 }

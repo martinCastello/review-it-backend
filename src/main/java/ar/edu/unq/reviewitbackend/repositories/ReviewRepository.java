@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
 import ar.edu.unq.reviewitbackend.entities.Review;
+import ar.edu.unq.reviewitbackend.entities.User;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long>{
@@ -17,7 +18,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long>{
 	@Query("select new ar.edu.unq.reviewitbackend.dto.DropdownInfo( e.id ) FROM Review e")
 	List<DropdownInfo> findDropdownInfo();
 
-Page<Review> findAllByTitle(String title, Pageable pageable);
+	Page<Review> findAllByTitle(String title, Pageable pageable);
 	
 	Page<Review> findAllByDescription(String description, Pageable pageable);
 
@@ -32,7 +33,9 @@ Page<Review> findAllByTitle(String title, Pageable pageable);
 	Page<Review> findAllByTitleAndDescriptionAndPoints(String title, String description, Integer points,
 			Pageable pageable);
 
-	Page<Review> findAllByTitleOrDescriptionOrPointsOrUserId(String search, String search2, Integer search3, Long search4,
+	Page<Review> findAllByTitleOrDescriptionOrPointsOrUser(String title, String description, Integer points, User userId,
 			Pageable pageable);
+
+	Page<Review> findAllByTitleContains(String title, Pageable pageable);
 
 }
