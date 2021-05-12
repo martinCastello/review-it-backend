@@ -13,5 +13,19 @@ public class OrderBy {
 	
 	String name;
 	String dir;
+    
+	public OrderBy(){};
+
+	public OrderBy(String name, String dir){
+		this.name = name;
+		this.dir = dir;
+	}
+
+	public String getDir() {
+        return dir;
+    }
+    public String getName() {
+        return name;
+	}
 	
 }
