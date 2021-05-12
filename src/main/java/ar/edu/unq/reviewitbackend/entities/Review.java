@@ -44,6 +44,10 @@ public class Review extends Auditable {
 	@Transient
 	private Long userId;
 	
+	private String img;
+	
+	private String overview;
+
 	public Review () {}
 	
 	public Review(String title, String description, Integer points, User user) {
