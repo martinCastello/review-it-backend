@@ -1,4 +1,4 @@
-package ar.edu.unq.reviewitbackend.services;
+package ar.edu.unq.reviewitbackend.controllers;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,10 +25,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import ar.edu.unq.reviewitbackend.ReviewItBackendApplication;
 import ar.edu.unq.reviewitbackend.controllers.UserController;
 import ar.edu.unq.reviewitbackend.entities.User;
+import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
 
 @WebMvcTest(UserController.class)
-class UserServiceTest {
+class UserControllerTest {
 
 	@Autowired
     private MockMvc mvc;

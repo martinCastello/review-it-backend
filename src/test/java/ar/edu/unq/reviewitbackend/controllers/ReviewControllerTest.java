@@ -1,4 +1,4 @@
-package ar.edu.unq.reviewitbackend.services;
+package ar.edu.unq.reviewitbackend.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -17,10 +17,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import ar.edu.unq.reviewitbackend.controllers.ReviewController;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.builders.UserBuilder;
+import ar.edu.unq.reviewitbackend.services.ReviewService;
+import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
 
 @WebMvcTest(ReviewController.class)
-class ReviewServiceTest {
+class ReviewControllerTest {
 
 	@Autowired
     private MockMvc mvc;
