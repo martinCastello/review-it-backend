@@ -17,8 +17,8 @@ public class OrderBy {
 	public OrderBy(){};
 
 	public OrderBy(String name, String dir){
-		this.name = name;
-		this.dir = dir;
+		this.setDir(dir);
+		this.setName(name);
 	}
 
 	public String getDir() {
@@ -26,6 +26,14 @@ public class OrderBy {
     }
     public String getName() {
         return name;
+	}
+
+	public void setDir(String dir){
+		this.dir = dir;		
+	}
+
+	public void setName(String name){
+		this.name = name;
 	}
 	
 }
