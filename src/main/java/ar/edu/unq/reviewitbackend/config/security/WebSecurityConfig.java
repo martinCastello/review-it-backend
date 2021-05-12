@@ -47,6 +47,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 		protected void configure(HttpSecurity http) throws Exception {
 			http.csrf().disable().authorizeRequests() 
               .mvcMatchers("/users/signUp").permitAll()
+              .mvcMatchers("/users**").permitAll()
               .anyRequest().authenticated()
               .and().cors()
               .and().oauth2ResourceServer().jwt();

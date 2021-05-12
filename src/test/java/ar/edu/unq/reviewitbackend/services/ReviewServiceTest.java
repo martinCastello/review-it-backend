@@ -1,31 +1,44 @@
 package ar.edu.unq.reviewitbackend.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.web.servlet.MockMvc;
 
-import ar.edu.unq.reviewitbackend.ReviewItBackendApplication;
+import ar.edu.unq.reviewitbackend.controllers.ReviewController;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.builders.UserBuilder;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
 
-@SpringBootTest(classes = ReviewItBackendApplication.class)
+@WebMvcTest(ReviewController.class)
 class ReviewServiceTest {
 
 	@Autowired
+    private MockMvc mvc;
+	
+	@MockBean
 	private ReviewService reviewService;
+	
+	@MockBean
+	private UserService userService;
 	
 	@Test
 	void givenPageSizeEqualsOneWhenIGetReviewsItsReturnOneReview() {
 		Pagination pagination = new Pagination(0, 1, "id", "desc");
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
-		if(reviewService.findAll(pageRequest).getSize() == 0) {
-			Review entity = new Review("Travis", "Para que inserte una reseña en travis", 5, UserBuilder.createUser().build());
-			reviewService.save(entity);
-		}
+		Review entity = new Review("Travis", "Para que inserte una reseña en travis", 2, UserBuilder.createUser().build());
+		List<Review> allReviews = Arrays.asList(entity);
+	    when(reviewService.findAll(pageRequest)).thenReturn(new PageImpl<Review>(allReviews));
+	    
 		assertEquals(1, reviewService.findAll(pageRequest).getContent().size());
 		assertEquals(1, reviewService.findAll(pageRequest).getNumberOfElements());
 	}
@@ -34,20 +47,22 @@ class ReviewServiceTest {
 	void givenPageSizeEqualsOneWhenIGetReviewsWithZeroPointsIntsReturnEmpty() {
 		Pagination pagination = new Pagination(0, 1, "id", "desc");
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
+		List<Review> allReviews = Arrays.asList();
+	    when(reviewService.findAll(pageRequest)).thenReturn(new PageImpl<Review>(allReviews));
 		
-		assertEquals(0, reviewService.findAll("", "", "", 0, "", pageRequest).getContent().size());
+		assertEquals(0, reviewService.findAll(pageRequest).getContent().size());
 	}
 	
 	@Test
-	void givenPageSizeEqualsOneWhenIGetReviewsWithTwoPoinsItsReturnOneReview() {
+	void givenPageSizeEqualsOneWhenIGetReviewsWithTwoPoinsItsReturnOneReview()throws Exception {
+		
 		Pagination pagination = new Pagination(0, 1, "id", "desc");
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
-		if(reviewService.findAll("", "", "", 2, "", pageRequest).getSize() == 0) {
-			Review entity = new Review("Travis", "Para que inserte una reseña en travis", 2, UserBuilder.createUser().build());
-			reviewService.save(entity);
-		}
+		Review entity = new Review("Travis", "Para que inserte una reseña en travis", 2, UserBuilder.createUser().build());
+		List<Review> allReviews = Arrays.asList(entity);
+	    when(reviewService.findAll(pageRequest)).thenReturn(new PageImpl<Review>(allReviews));
 		
-		assertEquals(1, reviewService.findAll("", "", "", 2, "", pageRequest).getContent().size());
+		assertEquals(1, reviewService.findAll(pageRequest).getContent().size());
 	}
 
 }
