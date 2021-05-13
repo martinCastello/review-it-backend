@@ -1,14 +1,24 @@
 package ar.edu.unq.reviewitbackend.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.ToString;
 
@@ -42,10 +52,17 @@ public class User extends Auditable{
 	private String password;
 	
 	@Size(max = 255)
-	private String avatar = "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png";
+	private String avatar;
 	
 	@NotNull
 	private Boolean isPrivate = false;
+
+	@OneToMany(mappedBy="to", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+
+    private List<Followers> followers = new ArrayList<Followers>();
+
+    @OneToMany(mappedBy="from", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Followers> following = new ArrayList<Followers>();
 	
 	public User () {}
 	
@@ -84,7 +101,13 @@ public class User extends Auditable{
 	public String getAvatar() {
 		return this.avatar;
 	}
-	
+	public List<Followers> getFollows(){
+		return this.following;
+	}
+	public List<Followers> getFollowers(){
+		return this.followers;
+	}
+
 	public void setLastName(String lastname) {
 		this.lastName = lastname;
 	}
@@ -109,5 +132,11 @@ public class User extends Auditable{
 		this.avatar = avatar;
 	}
 
+	public void addFollower(Followers follower){
+		this.followers.add(follower);
+	}
 
+	public void addFollow(Followers follow){
+		this.following.add(follow);
+	}
 }

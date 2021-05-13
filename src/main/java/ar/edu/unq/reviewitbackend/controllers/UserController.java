@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ar.edu.unq.reviewitbackend.entities.Followers;
 import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
@@ -78,5 +79,15 @@ public class UserController extends CommonController<User, UserService> {
 	public ResponseEntity<?> getProfile(@PathVariable Long id) {
 		Optional<User> oUser = this.service.findById(id);
 		return oUser.isPresent() ? ResponseEntity.ok(oUser.get()) : ResponseEntity.badRequest().build();
+	}
+
+	@PostMapping("/follow")
+	public ResponseEntity<?> follow(@RequestBody Followers requestFollow){
+		// System.out.println(requestFollow.getIdFrom());
+		// System.out.println(requestFollow.getIdTo());
+		// Optional<User> from = this.service.findById(id);
+		// Optional<User> to = this.service.findById(id);
+
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(requestFollow);
 	}
 }
