@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,5 +72,11 @@ public class UserController extends CommonController<User, UserService> {
 	public ResponseEntity<?> get(@RequestBody Long id) {
 		Optional<User> oUser = this.service.findById(id);
 		return oUser.isPresent() ? ResponseEntity.status(HttpStatus.ACCEPTED).body(oUser.get()) : ResponseEntity.badRequest().build();
+	}
+	
+	@GetMapping("/profile/{id}")
+	public ResponseEntity<?> getProfile(@PathVariable Long id) {
+		Optional<User> oUser = this.service.findById(id);
+		return oUser.isPresent() ? ResponseEntity.ok(oUser.get()) : ResponseEntity.badRequest().build();
 	}
 }

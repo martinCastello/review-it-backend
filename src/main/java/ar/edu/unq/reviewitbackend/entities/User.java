@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.ToString;
@@ -42,6 +43,9 @@ public class User extends Auditable{
 	
 	@Size(max = 255)
 	private String avatar = "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png";
+	
+	@NotNull
+	private Boolean isPrivate = false;
 	
 	public User () {}
 	

@@ -51,8 +51,7 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 		}
 		if(userName != null && userName.length() > 0) {
 			Optional<User> oUser = this.userService.findByUserName(userName);
-			if(oUser.isPresent())
-				predicatesAnd.add(cb.equal(root.get("user"), oUser.get()));
+			predicatesAnd.add(cb.equal(root.get("user"), oUser.orElse(null)));
 		}
 		if(inAll != null) {
 			predicatesOr.add(cb.like(root.get("title"), '%'+inAll.toLowerCase()+'%'));
