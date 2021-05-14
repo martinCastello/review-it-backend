@@ -1,37 +1,32 @@
 package ar.edu.unq.reviewitbackend.entities;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import ar.edu.unq.reviewitbackend.entities.pk.FollowersPK;
 import lombok.ToString;
 
 @ToString
 @Entity
-public class Followers  extends Auditable{
-
-    @Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_FOLLOWER")
-    private long id;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name="from_user_fk")
+@IdClass(FollowersPK.class)
+public class Followers extends Auditable {
+	
+	@Id
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="from_user_fk")
     private User from;
 
-    @ManyToOne(fetch = FetchType.EAGER , cascade = CascadeType.ALL)
-    @JoinColumn(name="to_user_fk")
+	@Id
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="to_user_fk")
     private User to;
-
-    @Transient
+	
+	@Transient
 	private Long idTo;
 
     @Transient
@@ -59,23 +54,6 @@ public class Followers  extends Auditable{
 
     public void setTo(User to){
         this.to = to;
-    }
-
-    public long getIdFrom(){
-        return this.idFrom;
-    }
-    
-    public long getIdTo(){
-        return this.idTo;
-        
-    }
-
-    public void setIdFrom(long idFrom){
-        this.idFrom = idFrom;
-    }
-
-    public void setIdTo(long idTo){
-        this.idTo = idTo;
     }
 
 }

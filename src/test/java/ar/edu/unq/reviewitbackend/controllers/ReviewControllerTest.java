@@ -14,7 +14,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import ar.edu.unq.reviewitbackend.controllers.ReviewController;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.builders.UserBuilder;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
