@@ -14,6 +14,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import lombok.ToString;
 
 @ToString
@@ -51,9 +54,11 @@ public class User extends Auditable{
 	@NotNull
 	private Boolean isPrivate = false;
 
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy="to")
     private List<Followers> followers = new ArrayList<Followers>();
 
+	@LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy="from")
     private List<Followers> following = new ArrayList<Followers>();
 	
