@@ -1,0 +1,9 @@
+language: java
+
+services:
+  - mysql
+  
+before_script:
+  - mysql -e 'DROP DATABASE IF EXISTS reviewit;'
+  - mysql -e 'CREATE DATABASE reviewit;'
+  - mysql -e 'use reviewit;'
