@@ -56,4 +56,21 @@ public class Followers extends Auditable {
         this.to = to;
     }
 
+    public long getIdTo(){
+        return this.idTo;
+    }
+
+    public long getIdFrom(){
+        return this.idFrom;
+    }
+
+    public void setIdTo(long idTo){
+        this.idTo = idTo;
+    }
+
+    public void setIdFrom(long idFrom){
+        this.idFrom = idFrom;
+    }
+
+
 }
