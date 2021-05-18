@@ -107,9 +107,9 @@ public class UserController extends CommonController<User, UserService> {
 
 		Followers persistentFollowRelation = this.followerService.save(followRelation);
 
-		// userFrom.addFollow(persistentFollowRelation);
+		// userFrom.addFollow(followRelation);
 
-		service.save(userFrom);
+		// followService.save(userFrom);
 		System.out.println("todo ok");
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(requestFollow);
 	}
