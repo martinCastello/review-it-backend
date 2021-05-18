@@ -134,5 +134,14 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	public List<DropdownInfo> findDropdownInfo() {
         return this.repository.findDropdownInfo();
     }
+
+	@Override
+	public Review create(Review entity) {
+		Optional<User> oUser = this.userService.findById(entity.getUserId());
+		if(oUser.isEmpty())
+			throw new RuntimeException("No se encuentra un usuario con ese id");
+		entity.setUser(oUser.get());
+		return this.save(entity);
+	}
 	
 }

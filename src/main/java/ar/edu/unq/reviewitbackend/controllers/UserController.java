@@ -1,6 +1,5 @@
 package ar.edu.unq.reviewitbackend.controllers;
 
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

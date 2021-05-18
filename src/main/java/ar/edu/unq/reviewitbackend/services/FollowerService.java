@@ -6,7 +6,9 @@ import org.springframework.data.domain.Pageable;
 import ar.edu.unq.reviewitbackend.entities.Followers;
 import ar.edu.unq.reviewitbackend.entities.User;
 
-public interface FollowerService  extends CommonService<Followers>{
+public interface FollowerService {
 
-    public Page<Followers> findAllByTo(User to, Pageable pageable);
+    Page<Followers> findAllByTo(User to, Pageable pageable);
+
+	Followers save(Followers followRelation);
 }

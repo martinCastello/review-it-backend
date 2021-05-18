@@ -61,9 +61,9 @@ class ReviewControllerTest {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
 		Review entity = new Review("Travis", "Para que inserte una reseña en travis", 2, UserBuilder.createUser().build());
 		List<Review> allReviews = Arrays.asList(entity);
-	    when(reviewService.findAll(pageRequest)).thenReturn(new PageImpl<Review>(allReviews));
+	    when(reviewService.findAllByPoints(2, pageRequest)).thenReturn(new PageImpl<Review>(allReviews));
 		
-		assertEquals(1, reviewService.findAll(pageRequest).getContent().size());
+		assertEquals(1, reviewService.findAllByPoints(2, pageRequest).getContent().size());
 	}
 
 }

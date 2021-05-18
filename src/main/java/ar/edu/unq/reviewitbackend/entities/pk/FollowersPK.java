@@ -5,7 +5,9 @@ import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 
 import ar.edu.unq.reviewitbackend.entities.User;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 public class FollowersPK implements Serializable{
 
 	@NotNull
