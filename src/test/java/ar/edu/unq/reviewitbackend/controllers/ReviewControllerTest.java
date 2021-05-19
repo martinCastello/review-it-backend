@@ -97,9 +97,9 @@ class ReviewControllerTest {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
 		Review entity = new Review("Travis", "Para que inserte una reseña en travis", 2, UserBuilder.createUser().build());
 		List<Review> allReviews = Arrays.asList(entity);
-	    when(reviewService.findAll(pageRequest)).thenReturn(new PageImpl<Review>(allReviews));
+	    when(reviewService.findAllByPoints(2, pageRequest)).thenReturn(new PageImpl<Review>(allReviews));
 		
-		assertEquals(1, reviewService.findAll(pageRequest).getContent().size());
+		assertEquals(1, reviewService.findAllByPoints(2, pageRequest).getContent().size());
 	}
 	
 	@Test
@@ -108,9 +108,9 @@ class ReviewControllerTest {
 		User gi021 = UserBuilder.createUser().build();
 		Review entity = new Review("Travis", "Para que inserte una reseña en travis", 2, gi021);
 		when(userService.findById(entity.getUser().getId())).thenReturn(Optional.of(gi021));
-		when(reviewService.save(Mockito.any(Review.class))).thenReturn(entity);
+		when(reviewService.create(Mockito.any(Review.class))).thenReturn(entity);
 	    
-	    mvc.perform(post("/reviews/save")
+	    mvc.perform(post("/reviews")
 	    		.content(mapper.writeValueAsString(entity))
 	    	    .contentType(MediaType.APPLICATION_JSON))
 	    	    .andExpect(status().isOk())

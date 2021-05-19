@@ -6,13 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import ar.edu.unq.reviewitbackend.entities.Followers;
-import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
+import ar.edu.unq.reviewitbackend.entities.pk.FollowersPK;
 
 @Repository
-public interface FollowerRepository extends JpaRepository<Followers, Long>{
+public interface FollowerRepository extends JpaRepository<Followers, FollowersPK>{
 
-	Page<Review> findAllByTo(User to, Pageable pageable);
+	Page<Followers> findAllByTo(User to, Pageable pageable);
 	
 
 }

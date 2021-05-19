@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.unq.reviewitbackend.entities.Followers;
 import ar.edu.unq.reviewitbackend.entities.User;
+import ar.edu.unq.reviewitbackend.services.FollowerService;
 import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
+import ar.edu.unq.viewmodel.FollowerViewModel;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -30,6 +33,9 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/users")
 public class UserController extends CommonController<User, UserService> {
 
+	@Autowired
+	private FollowerService followerService;
+	
 	@GetMapping
 	public ResponseEntity<?> getAll(Pagination pagination, 
 			@RequestParam(value = "email", required = false) String email,
@@ -82,12 +88,29 @@ public class UserController extends CommonController<User, UserService> {
 	}
 
 	@PostMapping("/follow")
-	public ResponseEntity<?> follow(@RequestBody Followers requestFollow){
-		// System.out.println(requestFollow.getIdFrom());
-		// System.out.println(requestFollow.getIdTo());
-		// Optional<User> from = this.service.findById(id);
-		// Optional<User> to = this.service.findById(id);
+	public ResponseEntity<?> follow(@RequestBody FollowerViewModel requestFollow){
+		Long idFrom = Long.valueOf(requestFollow.getIdFrom());
+		Long idTo = Long.valueOf(requestFollow.getIdTo());
+		Optional<User> from = this.service.findById(idFrom);
+		Optional<User> to = this.service.findById(idTo);
 
+		if((!from.isPresent() || !to.isPresent()) && (from.isEmpty() || to.isEmpty())){
+			return ResponseEntity.badRequest().build();
+		}
+		User userTo = to.get();
+		User userFrom = from.get();
+		
+		Followers followRelation = new Followers(userFrom, userTo);
+
+		followRelation.setIdFrom(userFrom.getId());
+		followRelation.setIdTo(userTo.getId());
+
+		Followers persistentFollowRelation = this.followerService.save(followRelation);
+
+		// userFrom.addFollow(followRelation);
+
+		// followService.save(userFrom);
+		System.out.println("todo ok");
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(requestFollow);
 	}
 }

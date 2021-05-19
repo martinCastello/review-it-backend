@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ar.edu.unq.reviewitbackend.entities.User;
+import ar.edu.unq.reviewitbackend.services.FollowerService;
 import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
 
@@ -39,6 +40,9 @@ class UserControllerTest {
 	
 	@MockBean
 	private UserService userService;
+	
+	@MockBean
+	private FollowerService followerService;
 	
 	private ObjectMapper mapper = new ObjectMapper();
 	

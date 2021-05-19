@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
+import ar.edu.unq.reviewitbackend.entities.Commentary;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.repositories.ReviewRepository;
@@ -134,5 +135,14 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	public List<DropdownInfo> findDropdownInfo() {
         return this.repository.findDropdownInfo();
     }
+
+	@Override
+	public Review create(Review entity) {
+		Optional<User> oUser = this.userService.findById(entity.getUserId());
+		if(oUser.isEmpty())
+			throw new RuntimeException("No se encuentra un usuario con ese id");
+		entity.setUser(oUser.get());
+		return this.save(entity);
+	}
 	
 }

@@ -1,30 +1,22 @@
 package ar.edu.unq.reviewitbackend.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import lombok.ToString;
 
 @ToString
 @Entity
-@SequenceGenerator(name = "SEQ_USER", initialValue = 1, allocationSize = 1, sequenceName = "SEQ_USER")
 public class User extends Auditable{
-    @Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_USER")
+	
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@NotBlank
@@ -54,13 +46,15 @@ public class User extends Auditable{
 	@NotNull
 	private Boolean isPrivate = false;
 
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy="to")
-    private List<Followers> followers = new ArrayList<Followers>();
-
-	@LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy="from")
-    private List<Followers> following = new ArrayList<Followers>();
+//	@JsonIgnore
+//	@LazyCollection(LazyCollectionOption.FALSE)
+//	@OneToMany(mappedBy="to", fetch = FetchType.LAZY)
+//    private List<Followers> followers;
+//
+//	@JsonIgnore
+//	@LazyCollection(LazyCollectionOption.FALSE)
+//    @OneToMany(mappedBy="from", fetch = FetchType.LAZY)
+//    private List<Followers> following;
 	
 	public User () {}
 	
@@ -99,12 +93,12 @@ public class User extends Auditable{
 	public String getAvatar() {
 		return this.avatar;
 	}
-	public List<Followers> getFollows(){
-		return this.following;
-	}
-	public List<Followers> getFollowers(){
-		return this.followers;
-	}
+//	public List<Followers> getFollows(){
+//		return this.following;
+//	}
+//	public List<Followers> getFollowers(){
+//		return this.followers;
+//	}
 
 	public void setLastName(String lastname) {
 		this.lastName = lastname;
@@ -130,11 +124,11 @@ public class User extends Auditable{
 		this.avatar = avatar;
 	}
 
-	public void addFollower(Followers follower){
-		this.followers.add(follower);
-	}
-
-	public void addFollow(Followers follow){
-		this.following.add(follow);
-	}
+//	public void addFollower(Followers follower){
+//		this.followers.add(follower);
+//	}
+//
+//	public void addFollow(Followers follow){
+//		this.following.add(follow);
+//	}
 }

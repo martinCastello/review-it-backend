@@ -26,4 +26,6 @@ public interface ReviewService extends CommonService<Review>{
 
 	Page<Review> findAllBySearch(String search, Pageable pageable);
 
+	Review create(Review entity);
+
 }
