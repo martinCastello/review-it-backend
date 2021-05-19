@@ -5,9 +5,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -17,11 +15,10 @@ import lombok.ToString;
 
 @ToString
 @Entity
-@SequenceGenerator(name = "SEQ_REVIEW", initialValue = 1, allocationSize = 1, sequenceName = "SEQ_REVIEW")
 public class Review extends Auditable {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_REVIEW")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@NotBlank(message = "Debe completar con el titulo de la pelicula")
@@ -38,7 +35,6 @@ public class Review extends Auditable {
 	private String category;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "user_Id", referencedColumnName = "id")
 	private User user;
 	
 	@Transient

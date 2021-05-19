@@ -1,6 +1,5 @@
 package ar.edu.unq.reviewitbackend.controllers;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -10,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +26,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ar.edu.unq.reviewitbackend.entities.User;
+import ar.edu.unq.reviewitbackend.services.FollowerService;
 import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
 
@@ -39,6 +38,9 @@ class UserControllerTest {
 	
 	@MockBean
 	private UserService userService;
+	
+	@MockBean
+	private FollowerService followerService;
 	
 	private ObjectMapper mapper = new ObjectMapper();
 	

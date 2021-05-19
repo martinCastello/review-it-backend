@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
+import ar.edu.unq.reviewitbackend.entities.Commentary;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.repositories.ReviewRepository;
