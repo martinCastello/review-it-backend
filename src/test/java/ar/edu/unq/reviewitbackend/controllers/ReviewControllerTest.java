@@ -108,7 +108,7 @@ class ReviewControllerTest {
 		User gi021 = UserBuilder.createUser().build();
 		Review entity = new Review("Travis", "Para que inserte una reseña en travis", 2, gi021);
 		when(userService.findById(entity.getUser().getId())).thenReturn(Optional.of(gi021));
-		when(reviewService.save(Mockito.any(Review.class))).thenReturn(entity);
+		when(reviewService.create(Mockito.any(Review.class))).thenReturn(entity);
 	    
 	    mvc.perform(post("/reviews")
 	    		.content(mapper.writeValueAsString(entity))
