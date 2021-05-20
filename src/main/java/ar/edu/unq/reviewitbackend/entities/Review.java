@@ -1,27 +1,32 @@
 package ar.edu.unq.reviewitbackend.entities;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.ToString;
 
 @ToString
 @Entity
-@SequenceGenerator(name = "SEQ_REVIEW", initialValue = 1, allocationSize = 1, sequenceName = "SEQ_REVIEW")
 public class Review extends Auditable {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_REVIEW")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@NotBlank(message = "Debe completar con el titulo de la pelicula")
@@ -38,11 +43,15 @@ public class Review extends Auditable {
 	private String category;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "user_Id", referencedColumnName = "id")
 	private User user;
 	
 	@Transient
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Long userId;
+	
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "review")
+	private List<Commentary> commentaries;
 	
 	public Review () {}
 	
@@ -91,6 +100,10 @@ public class Review extends Auditable {
 
 	public Long getUserId() {
 		return this.userId;
+	}
+	
+	public void addCommentary(Commentary commentary) {
+		this.commentaries.add(commentary);
 	}
 	
 	

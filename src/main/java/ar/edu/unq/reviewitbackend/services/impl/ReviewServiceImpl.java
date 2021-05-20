@@ -18,12 +18,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
+import ar.edu.unq.reviewitbackend.entities.Commentary;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.repositories.ReviewRepository;
+import ar.edu.unq.reviewitbackend.services.CommentaryService;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
 import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.OrderBy;
+import javassist.NotFoundException;
 
 @Service
 public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepository> implements ReviewService{
@@ -33,6 +36,9 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private CommentaryService commentaryService;
 	
 	public Page<Review> findAll(String inAll, String title, String description, Integer points, String userName, Pageable pageable) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -142,6 +148,15 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 			throw new RuntimeException("No se encuentra un usuario con ese id");
 		entity.setUser(oUser.get());
 		return this.save(entity);
+	}
+
+	@Override
+	public Commentary createCommentary(Commentary entity) throws NotFoundException {
+		Review review = this.findById(entity.getReviewId()).orElseThrow(() -> new NotFoundException("Reseña no encontrada"));
+		User user = this.userService.findById(entity.getUserId()).orElseThrow(() -> new NotFoundException("Usuario no encontrada"));
+		entity.setReview(review);
+		entity.setUser(user);
+		return this.commentaryService.save(entity);
 	}
 	
 }
