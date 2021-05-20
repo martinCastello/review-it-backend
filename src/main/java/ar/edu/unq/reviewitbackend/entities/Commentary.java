@@ -24,7 +24,6 @@ public class Commentary extends Auditable{
     @ManyToOne(fetch = FetchType.LAZY)
     private Review review;
     
-    @NotNull
     @Transient
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long reviewId;
@@ -32,7 +31,6 @@ public class Commentary extends Auditable{
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @NotNull
     @Transient
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long userId;

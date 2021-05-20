@@ -46,7 +46,6 @@ public class Review extends Auditable {
 	private User user;
 	
 	@Transient
-	@NotNull
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Long userId;
 	
