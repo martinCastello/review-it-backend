@@ -14,6 +14,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -55,10 +57,12 @@ public class User extends Auditable{
 	private Boolean isPrivate = false;
 
 	@LazyCollection(LazyCollectionOption.FALSE)
+	@JsonIgnore
 	@OneToMany(mappedBy="to")
     private List<Followers> followers = new ArrayList<Followers>();
-
+	
 	@LazyCollection(LazyCollectionOption.FALSE)
+	@JsonIgnore
     @OneToMany(mappedBy="from")
     private List<Followers> following = new ArrayList<Followers>();
 	

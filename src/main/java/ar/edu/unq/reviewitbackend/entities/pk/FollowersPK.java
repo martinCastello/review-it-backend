@@ -4,38 +4,37 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-import ar.edu.unq.reviewitbackend.entities.User;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 public class FollowersPK implements Serializable{
 
 	@NotNull
-	private User from;
+	private Long from;
 
     @NotNull
-    private User to;
+    private Long to;
     
     public FollowersPK() {}
     
-    public FollowersPK(User from, User to) {
+    public FollowersPK(Long from, Long to) {
 		this.from = from;
 		this.to = to;
 	}
 
-	public User getFrom() {
+	public Long getFrom() {
 		return from;
 	}
 
-	public void setFrom(User from) {
+	public void setFrom(Long from) {
 		this.from = from;
 	}
 
-	public User getTo() {
+	public Long getTo() {
 		return to;
 	}
 
-	public void setTo(User to) {
+	public void setTo(Long to) {
 		this.to = to;
 	}
 
