@@ -107,7 +107,7 @@ class ReviewControllerTest {
 	void testPrivateEndpointItShouldReturnCreatedReview() throws Exception {
 		User gi021 = UserBuilder.createUser().build();
 		Review entity = new Review("Travis", "Para que inserte una reseña en travis", 2, gi021);
-		when(userService.findById(entity.getUser().getId())).thenReturn(Optional.of(gi021));
+		when(userService.findById(Mockito.any(Long.class))).thenReturn(Optional.of(gi021));
 		when(reviewService.create(Mockito.any(Review.class))).thenReturn(entity);
 	    
 	    mvc.perform(post("/reviews")

@@ -3,7 +3,9 @@ package ar.edu.unq.reviewitbackend.services;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import ar.edu.unq.reviewitbackend.entities.Commentary;
 import ar.edu.unq.reviewitbackend.entities.Review;
+import javassist.NotFoundException;
 
 public interface ReviewService extends CommonService<Review>{
 
@@ -27,5 +29,7 @@ public interface ReviewService extends CommonService<Review>{
 	Page<Review> findAllBySearch(String search, Pageable pageable);
 
 	Review create(Review entity);
+
+	Commentary createCommentary(Commentary entity) throws NotFoundException;
 
 }
