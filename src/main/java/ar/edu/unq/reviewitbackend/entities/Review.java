@@ -1,15 +1,23 @@
 package ar.edu.unq.reviewitbackend.entities;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.ToString;
 
@@ -38,7 +46,13 @@ public class Review extends Auditable {
 	private User user;
 	
 	@Transient
+	@NotNull
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Long userId;
+	
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "review")
+	private List<Commentary> commentaries;
 	
 	public Review () {}
 	
@@ -87,6 +101,10 @@ public class Review extends Auditable {
 
 	public Long getUserId() {
 		return this.userId;
+	}
+	
+	public void addCommentary(Commentary commentary) {
+		this.commentaries.add(commentary);
 	}
 	
 	

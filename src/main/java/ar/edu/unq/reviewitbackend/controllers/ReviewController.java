@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ar.edu.unq.reviewitbackend.entities.Commentary;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
+import javassist.NotFoundException;
 
 @RestController
 @RequestMapping(path="/reviews")
@@ -50,6 +52,15 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 				errores.put(((FieldError) err).getField(), err.getDefaultMessage());
 		});
 		return ResponseEntity.badRequest().body(errores);
+	}
+	
+	@PostMapping("/createCommentary")
+	public ResponseEntity<?> createCommentary(@Valid @RequestBody Commentary entity, BindingResult result) throws NotFoundException {
+		if(result.hasErrors()) {
+			return this.validar(result);
+		}
+		Commentary oEntity = service.createCommentary(entity);
+		return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
 	}
 	
 	
