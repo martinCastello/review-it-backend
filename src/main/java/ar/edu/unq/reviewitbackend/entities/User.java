@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,8 +11,6 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -62,14 +59,12 @@ public class User extends Auditable{
 	@OneToMany(mappedBy = "user")
 	private List<Review> reviews;
 
-	@JsonIgnore
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy="to", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy="to")
     private List<Followers> followers;
 
-	@JsonIgnore
 	@LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy="from", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="from")
     private List<Followers> following;
 	
 	public User () {}
@@ -109,12 +104,14 @@ public class User extends Auditable{
 	public String getAvatar() {
 		return this.avatar;
 	}
-//	public List<Followers> getFollows(){
-//		return this.following;
-//	}
-//	public List<Followers> getFollowers(){
-//		return this.followers;
-//	}
+	
+	public List<Followers> getFollowing(){
+		return this.following;
+	}
+	
+	public List<Followers> getFollowers(){
+		return this.followers;
+	}
 
 	public void setLastName(String lastname) {
 		this.lastName = lastname;

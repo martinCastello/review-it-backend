@@ -1,12 +1,9 @@
 package ar.edu.unq.reviewitbackend.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 
 import ar.edu.unq.reviewitbackend.entities.pk.FollowersPK;
 import lombok.ToString;
@@ -17,59 +14,35 @@ import lombok.ToString;
 public class Followers extends Auditable {
 	
 	@Id
-    @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="from_user_fk")
-    private User from;
+    @Column(name="from_user_fk")
+	private Long from;
 
 	@Id
-    @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="to_user_fk")
-    private User to;
-	
-	@Transient
-	private Long idTo;
-
-    @Transient
-	private Long idFrom;
+	@Column(name="to_user_fk")
+	private Long to;
 
     public Followers() {};
 
-    public Followers(User from, User to) {
+    public Followers(Long from, Long to) {
         this.from = from;
         this.to = to;
     }
 
-    public User getFrom(){
+    public Long getFrom(){
         return this.from;
     }
     
-    public User getTo(){
+    public Long getTo(){
         return this.to;
         
     }
 
-    public void setFrom(User from){
+    public void setFrom(Long from){
         this.from = from;
     }
 
-    public void setTo(User to){
+    public void setTo(Long to){
         this.to = to;
-    }
-
-    public long getIdTo(){
-        return this.idTo;
-    }
-
-    public long getIdFrom(){
-        return this.idFrom;
-    }
-
-    public void setIdTo(long idTo){
-        this.idTo = idTo;
-    }
-
-    public void setIdFrom(long idFrom){
-        this.idFrom = idFrom;
     }
 
 

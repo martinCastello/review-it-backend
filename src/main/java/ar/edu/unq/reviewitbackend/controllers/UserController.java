@@ -7,7 +7,6 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +26,7 @@ import ar.edu.unq.reviewitbackend.services.FollowerService;
 import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
 import ar.edu.unq.viewmodel.FollowerViewModel;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 @RestController
 @RequestMapping("/users")
 public class UserController extends CommonController<User, UserService> {
@@ -41,7 +38,6 @@ public class UserController extends CommonController<User, UserService> {
 	public ResponseEntity<?> getAll(Pagination pagination, 
 			@RequestParam(value = "email", required = false) String email,
 			@RequestParam(value = "userName", required = false) String userName) {
-		// log.debug("Paginación solicitada: " + pagination.toString());
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
 		return ResponseEntity.ok(this.service.findAll(pageRequest));
 	}
@@ -98,13 +94,8 @@ public class UserController extends CommonController<User, UserService> {
 		if((!from.isPresent() || !to.isPresent()) && (from.isEmpty() || to.isEmpty())){
 			return ResponseEntity.badRequest().build();
 		}
-		User userTo = to.get();
-		User userFrom = from.get();
 		
-		Followers followRelation = new Followers(userFrom, userTo);
-
-		followRelation.setIdFrom(userFrom.getId());
-		followRelation.setIdTo(userTo.getId());
+		Followers followRelation = new Followers(idFrom, idTo);
 
 		this.followerService.save(followRelation);
 
