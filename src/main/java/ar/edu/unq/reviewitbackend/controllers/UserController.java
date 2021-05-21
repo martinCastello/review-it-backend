@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -105,9 +106,20 @@ public class UserController extends CommonController<User, UserService> {
 		followRelation.setIdFrom(userFrom.getId());
 		followRelation.setIdTo(userTo.getId());
 
-		Followers persistentFollowRelation = this.followerService.save(followRelation);
+		this.followerService.save(followRelation);
 
 		System.out.println("todo ok");
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(requestFollow);
+	}
+
+	@GetMapping("/extrainfo/{id}")
+	public ResponseEntity<?> getExtraInfo(Pagination pagination, @PathVariable Long id) {
+		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
+		Optional<User> oUser = this.service.findById(id);
+		// if(oUser.isPresent()){
+			System.out.print(this.followerService.findAllByTo(oUser.get(), pageRequest));
+			return ResponseEntity.ok(this.followerService.findAllByTo(oUser.get(), pageRequest));
+		// }
+		// return ResponseEntity.badRequest().build();
 	}
 }
