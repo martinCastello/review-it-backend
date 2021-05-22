@@ -6,8 +6,10 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import ar.edu.unq.reviewitbackend.entities.pk.FollowersPK;
 import lombok.ToString;
@@ -29,6 +31,14 @@ public class Followers extends Auditable {
 	@JoinColumn(name="to_user_fk")
 	private User to;
 
+	@Transient
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private Long idFrom;
+	
+	@Transient
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private Long idTo;
+	
     public Followers() {};
 
     public Followers(User from, User to) {
