@@ -110,11 +110,8 @@ public class UserController extends CommonController<User, UserService> {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
 		Optional<User> oUser = this.service.findById(id);
 		if(oUser.isPresent()){
-			Page<Followers> x = this.followerService.findAllByTo(oUser.get(), pageRequest);
-			List<Followers> d = x.getContent();
-			List<User> p = d.stream().map(algo -> algo.getFrom()).collect(Collectors.toList());
-			// List<User> followers = this.service.findByIdIn(p);
-			return ResponseEntity.ok(p);
+			Page<Followers> follower = this.followerService.findAllByTo(oUser.get(), pageRequest);
+			return ResponseEntity.ok(follower);
 		}
 		return ResponseEntity.badRequest().build();
 	}
