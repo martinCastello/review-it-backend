@@ -17,7 +17,7 @@ public class FollowerServiceImpl implements FollowerService{
 	@Autowired
 	private FollowerRepository repository;
 	
-	public Page<Followers> findAllByTo(User to, Pageable pageable) {
+	public Page<Followers> findAllByTo(Long to, Pageable pageable) {
 		return this.repository.findAllByTo(to, pageable);
 	}
 

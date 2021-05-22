@@ -8,7 +8,7 @@ import ar.edu.unq.reviewitbackend.entities.User;
 
 public interface FollowerService {
 
-    Page<Followers> findAllByTo(User to, Pageable pageable);
+    Page<Followers> findAllByTo(Long to, Pageable pageable);
 
 	Followers save(Followers followRelation);
 }
