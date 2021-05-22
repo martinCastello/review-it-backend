@@ -159,4 +159,9 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 		return this.commentaryService.save(entity);
 	}
 	
+	public Page<Commentary> findAllCommetariesById(Long id, Pageable pageable) throws NotFoundException{
+		Review review = this.findById(id).orElseThrow(() -> new NotFoundException("Reseña no encontrada"));
+		return this.commentaryService.findAllByReview(review, pageable);
+	}
+	
 }

@@ -43,6 +43,7 @@ public class Review extends Auditable {
 	private String category;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private User user;
 	
 	@Transient
@@ -80,6 +81,10 @@ public class Review extends Auditable {
 	
 	public User getUser() {
 		return this.user;
+	}
+	
+	public List<Commentary> getCommentaries(){
+		return this.commentaries;
 	}
 	
 	public void setTitle(String title) {

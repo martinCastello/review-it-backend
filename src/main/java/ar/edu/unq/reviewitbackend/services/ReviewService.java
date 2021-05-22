@@ -32,4 +32,6 @@ public interface ReviewService extends CommonService<Review>{
 
 	Commentary createCommentary(Commentary entity) throws NotFoundException;
 
+	Page<Commentary> findAllCommetariesById(Long id, Pageable pageable) throws NotFoundException;
+
 }
