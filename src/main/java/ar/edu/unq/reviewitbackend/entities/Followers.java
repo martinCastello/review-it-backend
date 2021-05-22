@@ -1,9 +1,13 @@
 package ar.edu.unq.reviewitbackend.entities;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import ar.edu.unq.reviewitbackend.entities.pk.FollowersPK;
 import lombok.ToString;
@@ -14,34 +18,38 @@ import lombok.ToString;
 public class Followers extends Auditable {
 	
 	@Id
-    @Column(name="from_user_fk")
-	private Long from;
+	@JsonManagedReference
+	@ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="from_user_fk")
+	private User from;
 
 	@Id
-	@Column(name="to_user_fk")
-	private Long to;
+	@JsonManagedReference
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="to_user_fk")
+	private User to;
 
     public Followers() {};
 
-    public Followers(Long from, Long to) {
+    public Followers(User from, User to) {
         this.from = from;
         this.to = to;
     }
 
-    public Long getFrom(){
+    public User getFrom(){
         return this.from;
     }
     
-    public Long getTo(){
+    public User getTo(){
         return this.to;
         
     }
 
-    public void setFrom(Long from){
+    public void setFrom(User from){
         this.from = from;
     }
 
-    public void setTo(Long to){
+    public void setTo(User to){
         this.to = to;
     }
 

@@ -98,7 +98,7 @@ public class UserController extends CommonController<User, UserService> {
 			return ResponseEntity.badRequest().build();
 		}
 		
-		Followers followRelation = new Followers(idFrom, idTo);
+		Followers followRelation = new Followers(from.get(), to.get());
 
 		this.followerService.save(followRelation);
 
@@ -110,10 +110,9 @@ public class UserController extends CommonController<User, UserService> {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
 		Optional<User> oUser = this.service.findById(id);
 		if(oUser.isPresent()){
-			System.out.print(this.followerService.findAllByTo(id, pageRequest));
-			Page<Followers> x = this.followerService.findAllByTo(id, pageRequest);
+			Page<Followers> x = this.followerService.findAllByTo(oUser.get(), pageRequest);
 			List<Followers> d = x.getContent();
-			List<Long> p = d.stream().map(algo -> algo.getFrom()).collect(Collectors.toList());
+			List<User> p = d.stream().map(algo -> algo.getFrom()).collect(Collectors.toList());
 			// List<User> followers = this.service.findByIdIn(p);
 			return ResponseEntity.ok(p);
 		}

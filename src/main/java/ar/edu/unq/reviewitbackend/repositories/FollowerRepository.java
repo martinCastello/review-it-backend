@@ -12,7 +12,7 @@ import ar.edu.unq.reviewitbackend.entities.pk.FollowersPK;
 @Repository
 public interface FollowerRepository extends JpaRepository<Followers, FollowersPK>{
 
-	Page<Followers> findAllByTo(Long to, Pageable pageable);
+	Page<Followers> findAllByTo(User user, Pageable pageable);
 	
 
 }
