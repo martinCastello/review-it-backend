@@ -59,10 +59,12 @@ public class User extends Auditable{
 	@OneToMany(mappedBy = "user")
 	private List<Review> reviews;
 
+	@JsonIgnore
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy="to")
     private List<Followers> followers;
 
+	@JsonIgnore
 	@LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy="from")
     private List<Followers> following;

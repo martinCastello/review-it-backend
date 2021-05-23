@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -21,6 +22,7 @@ public class Commentary extends Auditable{
 	@NotNull
     private String message;
 	
+	@JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Review review;
     
@@ -28,7 +30,8 @@ public class Commentary extends Auditable{
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long reviewId;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private User user;
 
     @Transient

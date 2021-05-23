@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,6 +62,12 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 		}
 		Commentary oEntity = service.createCommentary(entity);
 		return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
+	}
+	
+	@GetMapping("/{id}/comments")
+	public ResponseEntity<?> getComments(Pagination pagination, @PathVariable Long id) throws NotFoundException {
+		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
+		return ResponseEntity.ok(this.service.findAllCommetariesById(id, pageRequest));
 	}
 	
 	

@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,17 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.unq.reviewitbackend.entities.Followers;
 import ar.edu.unq.reviewitbackend.entities.User;
-import ar.edu.unq.reviewitbackend.services.FollowerService;
 import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
-import ar.edu.unq.viewmodel.FollowerViewModel;
+import javassist.NotFoundException;
 
 @RestController
 @RequestMapping("/users")
 public class UserController extends CommonController<User, UserService> {
-
-	@Autowired
-	private FollowerService followerService;
 	
 	@GetMapping
 	public ResponseEntity<?> getAll(Pagination pagination, 
@@ -85,32 +80,14 @@ public class UserController extends CommonController<User, UserService> {
 	}
 
 	@PostMapping("/follow")
-	public ResponseEntity<?> follow(@RequestBody FollowerViewModel requestFollow){
-		Long idFrom = Long.valueOf(requestFollow.getIdFrom());
-		Long idTo = Long.valueOf(requestFollow.getIdTo());
-		Optional<User> from = this.service.findById(idFrom);
-		Optional<User> to = this.service.findById(idTo);
-
-		if((!from.isPresent() || !to.isPresent()) && (from.isEmpty() || to.isEmpty())){
-			return ResponseEntity.badRequest().build();
-		}
-		
-		Followers followRelation = new Followers(idFrom, idTo);
-
-		this.followerService.save(followRelation);
-
-		System.out.println("todo ok");
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(requestFollow);
+	public ResponseEntity<?> follow(@RequestBody Followers requestFollow){
+		Followers relationship = this.service.createRelationship(requestFollow);
+		return relationship == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(relationship);
 	}
 
-	@GetMapping("/extrainfo/{id}")
-	public ResponseEntity<?> getExtraInfo(Pagination pagination, @PathVariable Long id) {
+	@GetMapping("/followers/{id}")
+	public ResponseEntity<?> getFollowers(Pagination pagination, @PathVariable Long id) throws NotFoundException {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
-		Optional<User> oUser = this.service.findById(id);
-		// if(oUser.isPresent()){
-			System.out.print(this.followerService.findAllByTo(oUser.get(), pageRequest));
-			return ResponseEntity.ok(this.followerService.findAllByTo(oUser.get(), pageRequest));
-		// }
-		// return ResponseEntity.badRequest().build();
+		return ResponseEntity.ok(this.service.findFollowersById(id, pageRequest));
 	}
 }
