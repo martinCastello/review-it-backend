@@ -8,7 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import ar.edu.unq.reviewitbackend.entities.pk.FollowersPK;
@@ -20,13 +19,11 @@ import lombok.ToString;
 public class Followers extends Auditable {
 	
 	@Id
-	@JsonManagedReference
 	@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="from_user_fk")
 	private User from;
 
 	@Id
-	@JsonManagedReference
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="to_user_fk")
 	private User to;

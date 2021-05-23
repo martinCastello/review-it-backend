@@ -15,7 +15,6 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.ToString;
@@ -60,12 +59,12 @@ public class User extends Auditable{
 	@OneToMany(mappedBy = "user")
 	private List<Review> reviews;
 
-	@JsonBackReference
+	@JsonIgnore
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy="to")
     private List<Followers> followers;
 
-	@JsonBackReference
+	@JsonIgnore
 	@LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy="from")
     private List<Followers> following;
