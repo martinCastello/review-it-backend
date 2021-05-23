@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -34,8 +33,5 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	Optional<User> findByUserNameAndEmail(String userName, String email);
 
 	Optional<User> findByUserName(String userName);
-	
-	// @Query( "select u from user o where id in :ids" )
-	// List<User> findByIdIn(List<Long> ids);
 
 }
