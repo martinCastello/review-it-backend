@@ -1,12 +1,15 @@
 package ar.edu.unq.reviewitbackend.controllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -95,22 +98,21 @@ public class UserController extends CommonController<User, UserService> {
 			return ResponseEntity.badRequest().build();
 		}
 		
-		Followers followRelation = new Followers(idFrom, idTo);
+		Followers followRelation = new Followers(from.get(), to.get());
 
 		this.followerService.save(followRelation);
 
-		System.out.println("todo ok");
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(requestFollow);
 	}
 
-	@GetMapping("/extrainfo/{id}")
-	public ResponseEntity<?> getExtraInfo(Pagination pagination, @PathVariable Long id) {
+	@GetMapping("/followers/{id}")
+	public ResponseEntity<?> getFollowers(Pagination pagination, @PathVariable Long id) {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
 		Optional<User> oUser = this.service.findById(id);
-		// if(oUser.isPresent()){
-			System.out.print(this.followerService.findAllByTo(oUser.get(), pageRequest));
-			return ResponseEntity.ok(this.followerService.findAllByTo(oUser.get(), pageRequest));
-		// }
-		// return ResponseEntity.badRequest().build();
+		if(oUser.isPresent()){
+			Page<Followers> follower = this.followerService.findAllByTo(oUser.get(), pageRequest);
+			return ResponseEntity.ok(follower);
+		}
+		return ResponseEntity.badRequest().build();
 	}
 }

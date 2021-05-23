@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -54,5 +55,9 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 	public Optional<User> findByUserName(String userName) {
 		return this.repository.findByUserName(userName);
 	}
+
+	// public List<User>findByIdIn(List<Long> ids){
+	// 	return this.repository.findByIdIn(ids);
+	// }
 	
 }
