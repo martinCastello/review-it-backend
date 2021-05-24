@@ -1,5 +1,6 @@
 package ar.edu.unq.reviewitbackend.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +12,8 @@ import ar.edu.unq.reviewitbackend.entities.User;
 import javassist.NotFoundException;
 
 public interface UserService extends CommonService<User>{
+
+	Page<User> findAll(String inAll, String mail, String userName, Pageable pageable);
 
 	Page<User> findAllByName(String name, Pageable pageable);
 
@@ -32,4 +35,5 @@ public interface UserService extends CommonService<User>{
 
 	Page<Followers> findFollowersById(Long id, PageRequest pageRequest) throws NotFoundException;
 
+	List<Followers>findFollowingsById(Long id) throws NotFoundException;
 }

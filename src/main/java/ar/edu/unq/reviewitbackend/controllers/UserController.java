@@ -30,11 +30,12 @@ import javassist.NotFoundException;
 public class UserController extends CommonController<User, UserService> {
 	
 	@GetMapping
-	public ResponseEntity<?> getAll(Pagination pagination, 
+	public ResponseEntity<?> getAll(Pagination pagination,
+			@RequestParam(value = "search", required = false) String inAll,
 			@RequestParam(value = "email", required = false) String email,
 			@RequestParam(value = "userName", required = false) String userName) {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
-		return ResponseEntity.ok(this.service.findAll(pageRequest));
+		return ResponseEntity.ok(this.service.findAll(inAll, email, userName, pageRequest));
 	}
 	
 	@PostMapping("/signUp")
@@ -89,5 +90,10 @@ public class UserController extends CommonController<User, UserService> {
 	public ResponseEntity<?> getFollowers(Pagination pagination, @PathVariable Long id) throws NotFoundException {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
 		return ResponseEntity.ok(this.service.findFollowersById(id, pageRequest));
+	}
+
+	@GetMapping("/followings/{id}")
+	public ResponseEntity<?> getFollowings(@PathVariable Long id) throws NotFoundException {
+		return ResponseEntity.ok(this.service.findFollowingsById(id));
 	}
 }
