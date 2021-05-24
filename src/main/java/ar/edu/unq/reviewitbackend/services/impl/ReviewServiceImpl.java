@@ -3,9 +3,11 @@ package ar.edu.unq.reviewitbackend.services.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
@@ -40,24 +42,35 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	@Autowired
 	private CommentaryService commentaryService;
 	
-	public Page<Review> findAll(String inAll, String title, String description, Integer points, String userName, Pageable pageable) {
+	public Page<Review> findAll(String inAll, String title, String description, Integer points, String nameOrLastName, Pageable pageable) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cr = cb.createQuery(Long.class);
 		Root<Review> root = cr.from(Review.class);
 		List<Predicate> predicatesAnd = new ArrayList<>();
 		List<Predicate> predicatesOr = new ArrayList<>();
 		if(title != null) {
-			predicatesAnd.add(cb.like(root.get("title"), '%'+title.toLowerCase()+'%'));
+			predicatesAnd.add(cb.like(root.get("title"), '%'+title+'%'));
 		}
 		if(description != null) {
-			predicatesAnd.add(cb.like(root.get("description"), '%'+description.toLowerCase()+'%'));
+			predicatesAnd.add(cb.like(root.get("description"), '%'+description+'%'));
 		}
 		if(points != null) {
 			predicatesAnd.add(cb.equal(root.get("points"), points));
 		}
-		if(userName != null && userName.length() > 0) {
-			Optional<User> oUser = this.userService.findByUserName(userName);
-			predicatesAnd.add(cb.equal(root.get("user"), oUser.orElse(null)));
+		if(nameOrLastName != null && nameOrLastName.length() > 0) {
+			String[] nameAndLastName = nameOrLastName.split(" ");
+			List<User> users = new ArrayList<>();
+			for(String dataUser : nameAndLastName) {
+				for(User user : this.userService.findByNameContainsOrLastNameContains(dataUser, dataUser)) {
+					if(!users.stream().map(u -> u.getUserName()).collect(Collectors.toList()).contains(user.getUserName()))
+						users.add(user);
+				}
+			}
+			In<User> inClause = cb.in(root.get("user"));
+			for (User user : users) {
+			    inClause.value(user);
+			}
+			predicatesAnd.add(inClause);
 		}
 		if(inAll != null) {
 			predicatesOr.add(cb.like(root.get("title"), '%'+inAll.toLowerCase()+'%'));

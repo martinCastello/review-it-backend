@@ -1,5 +1,6 @@
 package ar.edu.unq.reviewitbackend.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -31,5 +32,9 @@ public interface UserService extends CommonService<User>{
 	Followers createRelationship(Followers requestFollow);
 
 	Page<Followers> findFollowersById(Long id, PageRequest pageRequest) throws NotFoundException;
+	
+	List<User> findByNameContainsOrLastNameContains(String name, String lastName);
+
+	List<User> findByNameContains(String nameOrLastName);
 
 }
