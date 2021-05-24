@@ -127,6 +127,16 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 		User user = this.findById(id).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 		return this.followerService.findAllByTo(user, pageRequest);
 	}
+
+	@Override
+	public List<User> findByNameContainsOrLastNameContains(String name, String lastName) {
+		return this.repository.findByNameContainsOrLastNameContains(name, lastName);
+	}
+
+	@Override
+	public List<User> findByNameContains(String nameOrLastName) {
+		return this.repository.findByNameContains(nameOrLastName);
+	}
 	
 	@Override
 	public List<Followers>findFollowingsById(Long id) throws NotFoundException{
