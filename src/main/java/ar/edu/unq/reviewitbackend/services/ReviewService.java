@@ -9,7 +9,7 @@ import javassist.NotFoundException;
 
 public interface ReviewService extends CommonService<Review>{
 
-	Page<Review> findAll(String inAll, String title, String description, Integer points, String userName, Pageable pageable);
+	Page<Review> findAll(String inAll, String title, String description, Integer points, String userName,Long userId, Pageable pageable);
 	
 	Page<Review> findAllByTitle(String title, Pageable pageable);
 	
