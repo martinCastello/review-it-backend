@@ -72,6 +72,9 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 			}
 			predicatesAnd.add(inClause);
 		}
+		if(userId != null){
+			predicatesAnd.add(cb.equal(root.get("user"), userId));
+		}
 		if(inAll != null) {
 			predicatesOr.add(cb.like(root.get("title"), '%'+inAll.toLowerCase()+'%'));
 			predicatesOr.add(cb.like(root.get("description"), '%'+inAll.toLowerCase()+'%'));
@@ -84,9 +87,6 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 			Optional<User> oUser = this.userService.findByUserName(inAll);
 			if(oUser.isPresent())
 				predicatesOr.add(cb.equal(root.get("user"), oUser.get()));
-		}
-		if(userId != null){
-			predicatesAnd.add(cb.equal(root.get("userId"), points));
 		}
 		List<Predicate> predicates = new ArrayList<>();
 		if(!predicatesAnd.isEmpty())

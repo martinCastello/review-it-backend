@@ -33,8 +33,8 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 			@RequestParam(value = "title", required = false) String title,
 			@RequestParam(value = "description", required = false) String description,
 			@RequestParam(value = "points", required = false) Integer points,
-			@RequestParam(value = "userId", required = false) Long userId,
-			@RequestParam(value = "userName", required = false) String name) {
+			@RequestParam(value = "name", required = false) String name,
+			@RequestParam(value = "userId", required = false) Long userId) {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
 		return ResponseEntity.ok(this.service.findAll(inAll, title, description, points, name, userId, pageRequest));
 	}
