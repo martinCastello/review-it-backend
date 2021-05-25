@@ -142,5 +142,15 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 		User user = this.findById(id).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 		return this.followerService.findAllByFrom(user);
 	}
+
+	@Override
+	public User modify(User entity) throws NotFoundException {
+		User user = this.findById(entity.getId()).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+		user.setAvatar(entity.getAvatar());
+		user.setEmail(entity.getEmail());
+		user.setName(entity.getName());
+		user.setPassword(entity.getPassword());
+		return this.save(user);
+	}
 	
 }
