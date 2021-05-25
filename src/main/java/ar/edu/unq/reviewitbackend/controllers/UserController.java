@@ -14,6 +14,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,12 +52,12 @@ public class UserController extends CommonController<User, UserService> {
 		}
 	}
 	
-	@PostMapping("/save")
-	public ResponseEntity<?> update(@Valid @RequestBody User entity, BindingResult result) {
+	@PostMapping
+	public ResponseEntity<?> modify(@Valid @RequestBody User entity, BindingResult result) throws NotFoundException {
 		if(result.hasErrors()) {
 			return this.validar(result);
 		}
-		User oEntity = service.save(entity);
+		User oEntity = service.modify(entity);
 		return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
 	}
 	

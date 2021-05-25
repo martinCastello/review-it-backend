@@ -40,4 +40,6 @@ public interface UserService extends CommonService<User>{
 	List<User> findByNameContains(String nameOrLastName);
 
 	List<Followers>findFollowingsById(Long id) throws NotFoundException;
+
+	User modify(User entity) throws NotFoundException;
 }
