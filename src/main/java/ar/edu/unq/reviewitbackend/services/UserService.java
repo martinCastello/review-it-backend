@@ -13,6 +13,8 @@ import javassist.NotFoundException;
 
 public interface UserService extends CommonService<User>{
 
+	Page<User> findAll(String inAll, String mail, String userName, Pageable pageable);
+
 	Page<User> findAllByName(String name, Pageable pageable);
 
 	Page<User> findAllByLastName(String lastName, Pageable pageable);
@@ -37,4 +39,5 @@ public interface UserService extends CommonService<User>{
 
 	List<User> findByNameContains(String nameOrLastName);
 
+	List<Followers>findFollowingsById(Long id) throws NotFoundException;
 }

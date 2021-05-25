@@ -1,5 +1,7 @@
 package ar.edu.unq.reviewitbackend.repositories;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +16,6 @@ public interface FollowerRepository extends JpaRepository<Followers, FollowersPK
 
 	Page<Followers> findAllByTo(User user, Pageable pageable);
 	
+	List<Followers> findAllByFrom(User user);
 
 }

@@ -1,10 +1,19 @@
 package ar.edu.unq.reviewitbackend.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,6 +24,7 @@ import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.repositories.UserRepository;
 import ar.edu.unq.reviewitbackend.services.FollowerService;
 import ar.edu.unq.reviewitbackend.services.UserService;
+import ar.edu.unq.reviewitbackend.utils.OrderBy;
 import javassist.NotFoundException;
 
 @Service
@@ -22,9 +32,49 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 
 	@Autowired
 	private FollowerService followerService;
+
+	@Autowired
+	private EntityManager em;
 	
-	public Page<User> findAll(Pageable pageable) {
-		return this.repository.findAll(pageable);
+	public Page<User> findAll(String inAll, String mail, String username, Pageable pageable) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cr = cb.createQuery(Long.class);
+		Root<User> root = cr.from(User.class);
+		List<Predicate> predicatesAnd = new ArrayList<>();
+		List<Predicate> predicatesOr = new ArrayList<>();
+		if(mail != null) {
+			predicatesAnd.add(cb.like(root.get("email"), '%'+mail.toLowerCase()+'%'));
+		}
+		if(username != null) {
+			predicatesAnd.add(cb.like(root.get("userName"), '%'+username.toLowerCase()+'%'));
+		}
+		if(inAll != null) {
+			predicatesOr.add(cb.like(root.get("email"), '%'+inAll.toLowerCase()+'%'));
+			predicatesOr.add(cb.like(root.get("userName"), '%'+inAll.toLowerCase()+'%'));
+			predicatesOr.add(cb.like(root.get("name"), '%'+inAll.toLowerCase()+'%'));
+			predicatesOr.add(cb.like(root.get("lastName"), '%'+inAll.toLowerCase()+'%'));
+		}
+		List<Predicate> predicates = new ArrayList<>();
+		if(!predicatesAnd.isEmpty())
+			predicates.add(cb.and(predicatesAnd.toArray(new Predicate[predicatesAnd.size()])));
+		if(!predicatesOr.isEmpty())
+			predicates.add(cb.or(predicatesOr.toArray(new Predicate[predicatesOr.size()])));
+		cr.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		cr.select(cb.count(root));
+		long total = em.createQuery(cr).getSingleResult();
+
+		CriteriaBuilder cb2 = em.getCriteriaBuilder();
+		CriteriaQuery<User> cr2 = cb2.createQuery(User.class);
+		Root<User> root2 = cr2.from(User.class);
+		cr2.where(cb2.and(predicates.toArray(new Predicate[predicates.size()])));
+
+		List<OrderBy> orderByList = new ArrayList<>();
+		pageable.getSort().get().forEach(s -> orderByList.add(new OrderBy(s.getProperty(), s.getDirection().toString())));
+		List<Order> orders = this.buildOrder(orderByList, cb2, root2);
+		cr2.orderBy(orders).select(root2);
+		List<User> content = em.createQuery(cr2).setFirstResult((int) pageable.getOffset()).setMaxResults(pageable.getPageSize()).getResultList();
+		em.close();
+		return new PageImpl<>(content, pageable, total);
 	}
 
 	public Page<User> findAllByName(String name, Pageable pageable) {
@@ -85,6 +135,12 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 	@Override
 	public List<User> findByNameContains(String nameOrLastName) {
 		return this.repository.findByNameContains(nameOrLastName);
+	}
+	
+	@Override
+	public List<Followers>findFollowingsById(Long id) throws NotFoundException{
+		User user = this.findById(id).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+		return this.followerService.findAllByFrom(user);
 	}
 	
 }
