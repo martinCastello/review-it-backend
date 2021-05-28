@@ -7,15 +7,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.ToString;
 
@@ -68,6 +72,13 @@ public class User extends Auditable{
 	@LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy="from")
     private List<Followers> following;
+
+	@Lob
+	private byte[] avatarFile;
+	
+	@Transient
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private MultipartFile avatarFileForView;
 	
 	public User () {}
 	
@@ -114,6 +125,10 @@ public class User extends Auditable{
 	public List<Followers> getFollowers(){
 		return this.followers;
 	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public void setLastName(String lastname) {
 		this.lastName = lastname;
@@ -137,6 +152,22 @@ public class User extends Auditable{
 	
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+
+	public byte[] getAvatarFile() {
+		return avatarFile;
+	}
+
+	public void setAvatarFile(byte[] avatarFile) {
+		this.avatarFile = avatarFile;
+	}
+
+	public MultipartFile getAvatarFileForView() {
+		return avatarFileForView;
+	}
+
+	public void setAvatarFileForView(MultipartFile avatarFileForView) {
+		this.avatarFileForView = avatarFileForView;
 	}
 
 //	public void addFollower(Followers follower){
