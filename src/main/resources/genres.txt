@@ -1,0 +1,27 @@
+12/Aventura
+14/Fantasía
+16/Animación
+18/Drama
+27/Terror
+28/Acción
+35/Comedia
+36/Historia
+37/Western
+53/Suspense
+80/Crimen
+878/Ciencia ficción
+99/Documental
+9648/Misterio
+10402/Música
+10749/Romance
+10751/Familia
+10752/Bélica
+10759/Action & Adventure
+10762/Kids
+10763/News
+10764/Reality
+10765/Sci-Fi & Fantasy
+10766/Soap
+10767/Talk
+10768/War & Politics
+10770/Película de TV
