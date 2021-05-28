@@ -6,18 +6,20 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.unq.reviewitbackend.entities.Followers;
@@ -53,7 +55,8 @@ public class UserController extends CommonController<User, UserService> {
 	}
 	
 	@PostMapping
-	public ResponseEntity<?> modify(@Valid @RequestBody User entity, BindingResult result) throws NotFoundException {
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ResponseEntity<?> modify(@Valid User entity, BindingResult result) throws NotFoundException {
 		if(result.hasErrors()) {
 			return this.validar(result);
 		}
@@ -97,4 +100,13 @@ public class UserController extends CommonController<User, UserService> {
 	public ResponseEntity<?> getFollowings(@PathVariable Long id) throws NotFoundException {
 		return ResponseEntity.ok(this.service.findFollowingsById(id));
 	}
+	
+	@GetMapping("/avatar/{id}")
+    public ResponseEntity<?> getAvatar(@PathVariable Long id) {
+		Optional<User> oUser = this.service.findById(id);
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(new ByteArrayResource(oUser.get().getAvatarFile()));
+    }
 }

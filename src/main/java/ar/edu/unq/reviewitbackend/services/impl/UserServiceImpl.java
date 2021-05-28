@@ -1,5 +1,6 @@
 package ar.edu.unq.reviewitbackend.services.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
 import ar.edu.unq.reviewitbackend.entities.Followers;
@@ -145,12 +147,22 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 
 	@Override
 	public User modify(User entity) throws NotFoundException {
-		User user = this.findById(entity.getId()).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
-		user.setAvatar(entity.getAvatar());
-		user.setEmail(entity.getEmail());
-		user.setName(entity.getName());
-		user.setPassword(entity.getPassword());
-		return this.save(user);
+		User user = this.findByUserName(entity.getUserName()).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+		
+		String fileName = StringUtils.cleanPath(entity.getAvatarFileForView().getOriginalFilename());
+		try {
+            if(fileName.contains("..")) {
+                throw new RuntimeException("Perdon! El nombre del archivo contiene secuencia de ruta invalida " + fileName);
+            }
+            user.setAvatarFile(entity.getAvatarFileForView().getBytes());
+            user.setAvatar(entity.getAvatar());
+    		user.setEmail(entity.getEmail());
+    		user.setName(entity.getName());
+    		user.setPassword(entity.getPassword());
+    		return this.save(user);
+        } catch (IOException ex) {
+            throw new RuntimeException("No se pudo almacenar el archivo " + fileName + ". Por favor intente nuevamente!", ex);
+        }
 	}
 	
 }
