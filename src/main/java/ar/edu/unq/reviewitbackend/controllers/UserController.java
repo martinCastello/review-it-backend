@@ -1,6 +1,5 @@
 package ar.edu.unq.reviewitbackend.controllers;
 
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -105,14 +104,13 @@ public class UserController extends CommonController<User, UserService> {
 	@GetMapping("/avatar/{id}")
     public ResponseEntity<?> getAvatar(@PathVariable Long id) {
 		Optional<User> oUser = this.service.findById(id);
+		byte [] avatarFile = new byte[0];
 		if(oUser.get().getAvatarFile() != null){
-			return ResponseEntity
-					.ok()
-					.contentType(MediaType.IMAGE_PNG)
-					.body(new ByteArrayResource(oUser.get().getAvatarFile()));
+			avatarFile = oUser.get().getAvatarFile();
 		}
-		else{
-			return ResponseEntity.notFound().build();
-		}
+		return ResponseEntity
+				.ok()
+				.contentType(MediaType.IMAGE_PNG)
+				.body(new ByteArrayResource(avatarFile));
     }
 }
