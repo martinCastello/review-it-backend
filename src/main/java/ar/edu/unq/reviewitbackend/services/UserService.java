@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import ar.edu.unq.reviewitbackend.entities.Followers;
@@ -33,13 +32,13 @@ public interface UserService extends CommonService<User>{
 
 	Followers createRelationship(Followers requestFollow);
 
-	Page<Followers> findFollowersById(Long id, PageRequest pageRequest) throws NotFoundException;
+	Page<Followers> findFollowersById(Long id, Pageable pageable) throws NotFoundException;
 	
 	List<User> findByNameContainsOrLastNameContains(String name, String lastName);
 
 	List<User> findByNameContains(String nameOrLastName);
 
-	List<Followers>findFollowingsById(Long id) throws NotFoundException;
+	Page<Followers> findFollowingsById(Long id, Pageable pageable) throws NotFoundException;
 
 	User modify(User entity) throws NotFoundException;
 }

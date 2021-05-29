@@ -97,8 +97,9 @@ public class UserController extends CommonController<User, UserService> {
 	}
 
 	@GetMapping("/followings/{id}")
-	public ResponseEntity<?> getFollowings(@PathVariable Long id) throws NotFoundException {
-		return ResponseEntity.ok(this.service.findFollowingsById(id));
+	public ResponseEntity<?> getFollowings(Pagination pagination, @PathVariable Long id) throws NotFoundException {
+		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
+		return ResponseEntity.ok(this.service.findFollowingsById(id, pageRequest));
 	}
 	
 	@GetMapping("/avatar/{id}")

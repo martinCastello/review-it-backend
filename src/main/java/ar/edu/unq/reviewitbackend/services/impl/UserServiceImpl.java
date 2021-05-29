@@ -15,7 +15,6 @@ import javax.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -124,9 +123,9 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 	}
 
 	@Override
-	public Page<Followers> findFollowersById(Long id, PageRequest pageRequest) throws NotFoundException {
+	public Page<Followers> findFollowersById(Long id, Pageable pageable) throws NotFoundException {
 		User user = this.findById(id).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
-		return this.followerService.findAllByTo(user, pageRequest);
+		return this.followerService.findAllByTo(user, pageable);
 	}
 
 	@Override
@@ -140,9 +139,9 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 	}
 	
 	@Override
-	public List<Followers>findFollowingsById(Long id) throws NotFoundException{
+	public Page<Followers> findFollowingsById(Long id, Pageable pageable) throws NotFoundException{
 		User user = this.findById(id).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
-		return this.followerService.findAllByFrom(user);
+		return this.followerService.findAllByFrom(user, pageable);
 	}
 
 	@Override
