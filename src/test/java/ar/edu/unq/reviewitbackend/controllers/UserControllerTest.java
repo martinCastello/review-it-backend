@@ -46,28 +46,15 @@ class UserControllerTest {
 	
 	private ObjectMapper mapper = new ObjectMapper();
 	
-	@Test
-	void itShouldReturnCreatedUser() throws Exception {
-		User entity = new User("Gisele", "Escobar", "gescobar@yahoo.com.ar", "gi", "123");
-		when(userService.findByUserName(entity.getUserName())).thenReturn(Optional.ofNullable(null));
-	    when(userService.save(Mockito.any(User.class))).thenReturn(entity);
-	    mvc.perform(post("/users/signUp")
-	    		.content(mapper.writeValueAsString(entity))
-	    	    .contentType(MediaType.APPLICATION_JSON))
-	    	    .andExpect(status().isCreated())
-	    	    .andExpect(jsonPath("$.name").value(entity.getName()));
-	}
-	
 	
 	@Test
-	void testPublicEndpointItShouldReturnExistingUser() throws Exception {
-		User entity = new User("Gisele", "Escobar", "gescobar@yahoo.com.ar", "gi", "123");
-		when(userService.findByUserName(entity.getUserName())).thenReturn(Optional.of(entity));    
-	    
-		mvc.perform(post("/users/signUp")
+	void testPublicEndpointItShouldReturnLoggingUser() throws Exception {
+		User entity = new User("Gisele", "Escobar", "gescobar@yahoo.com.ar", "gi", "123");   
+		when(userService.create(Mockito.any(User.class))).thenReturn(entity);
+		mvc.perform(post("/users/login")
 	    		.content(mapper.writeValueAsString(entity))
 	    	    .contentType(MediaType.APPLICATION_JSON))
-	    	    .andExpect(status().isAccepted())
+	    	    .andExpect(status().isOk())
 	    	    .andExpect(jsonPath("$.name").value(entity.getName()));
 	}
 	

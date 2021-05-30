@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -31,15 +32,17 @@ public class User extends Auditable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank
+	@NotBlank(message="El campo Nombre no puede estar vacio")
     @Size(max = 50)
 	private String name;
 	
-	
+	@NotBlank(message="El campo Apellido no puede estar vacio")
     @Size(max = 50)
 	@Column(name = "last_name")
 	private String lastName;
 	
+	@Email(message="El correo electronico no tiene un formato valido")
+    @NotBlank(message="Debe proporcionar un correo electronico")
     @Size(max = 255)
 	private String email;
 	
@@ -52,10 +55,12 @@ public class User extends Auditable{
     @Size(max = 255)
 	private String password;
 	
+	@NotBlank
 	@Size(max = 255)
-	private String avatar;
+	private String avatar = "https://www.adl-logistica.org/wp-content/uploads/2019/07/imagen-perfil-sin-foto.png";
 	
 	@NotNull
+	@Column(name = "is_private")
 	private Boolean isPrivate = false;
 	
 	@JsonIgnore
@@ -66,14 +71,15 @@ public class User extends Auditable{
 	@JsonIgnore
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy="to")
-    private List<Followers> followers;
+    private List<Follower> followers;
 
 	@JsonIgnore
 	@LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy="from")
-    private List<Followers> following;
+    private List<Follower> following;
 
 	@Lob
+	@Column(name = "avatar_file")
 	private byte[] avatarFile;
 	
 	@Transient
@@ -118,11 +124,11 @@ public class User extends Auditable{
 		return this.avatar;
 	}
 	
-	public List<Followers> getFollowing(){
+	public List<Follower> getFollowing(){
 		return this.following;
 	}
 	
-	public List<Followers> getFollowers(){
+	public List<Follower> getFollowers(){
 		return this.followers;
 	}
 	

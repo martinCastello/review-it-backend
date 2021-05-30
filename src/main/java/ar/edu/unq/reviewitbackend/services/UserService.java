@@ -6,12 +6,14 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import ar.edu.unq.reviewitbackend.entities.Followers;
+import ar.edu.unq.reviewitbackend.entities.Follower;
 import ar.edu.unq.reviewitbackend.entities.User;
 import javassist.NotFoundException;
 
 public interface UserService extends CommonService<User>{
 
+	User create(User user);
+	
 	Page<User> findAll(String inAll, String mail, String userName, Pageable pageable);
 
 	Page<User> findAllByName(String name, Pageable pageable);
@@ -30,15 +32,17 @@ public interface UserService extends CommonService<User>{
 
 	Optional<User> findByUserName(String search);
 
-	Followers createRelationship(Followers requestFollow);
+	Follower createRelationship(Follower requestFollow);
 
-	Page<Followers> findFollowersById(Long id, Pageable pageable) throws NotFoundException;
+	Page<Follower> findFollowersByUserName(String userName, Pageable pageable) throws NotFoundException;
 	
 	List<User> findByNameContainsOrLastNameContains(String name, String lastName);
 
 	List<User> findByNameContains(String nameOrLastName);
 
-	Page<Followers> findFollowingsById(Long id, Pageable pageable) throws NotFoundException;
+	Page<Follower> findFollowingsByUserName(String userName, Pageable pageable) throws NotFoundException;
 
 	User modify(User entity) throws NotFoundException;
+
+	List<Follower> findFollowingsByUserName(String username) throws NotFoundException;
 }
