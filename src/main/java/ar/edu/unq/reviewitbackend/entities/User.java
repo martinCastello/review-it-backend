@@ -57,7 +57,7 @@ public class User extends Auditable{
 	
 	@NotBlank
 	@Size(max = 255)
-	private String avatar;
+	private String avatar = "https://www.adl-logistica.org/wp-content/uploads/2019/07/imagen-perfil-sin-foto.png";
 	
 	@NotNull
 	@Column(name = "is_private")
