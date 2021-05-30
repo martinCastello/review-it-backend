@@ -19,10 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import ar.edu.unq.reviewitbackend.entities.Followers;
+import ar.edu.unq.reviewitbackend.entities.Follower;
 import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
@@ -41,33 +40,30 @@ public class UserController extends CommonController<User, UserService> {
 		return ResponseEntity.ok(this.service.findAll(inAll, email, userName, pageRequest));
 	}
 	
-	@PostMapping("/signUp")
-	public ResponseEntity<?> singUp(@Valid @RequestBody User user) {
-
-		Optional<User> oUser = this.service.findByUserName(user.getUserName());
-
-		if (oUser.isPresent()) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(oUser.get());
-		} else {
-			User oEntity = this.service.save(user);
-			return oEntity == null ? ResponseEntity.badRequest().build() :ResponseEntity.status(HttpStatus.CREATED).body(oEntity);
-		}
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@Valid @RequestBody User user) {
+		User oEntity = this.service.create(user);
+		return oEntity == null ? ResponseEntity.badRequest().build() :ResponseEntity.ok(oEntity);
 	}
 	
 	@PostMapping
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public ResponseEntity<?> modify(@Valid User entity, BindingResult result) throws NotFoundException {
+	public ResponseEntity<?> modify(@Valid User entity, BindingResult result) {
 		if(result.hasErrors()) {
 			return this.validar(result);
 		}
-		User oEntity = service.modify(entity);
+		User oEntity;
+		try {
+			oEntity = service.modify(entity);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
 		return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
 	}
 	
 	protected ResponseEntity<?> validar(BindingResult result){
 		Map<String, Object> errores = new HashMap<>();
 		result.getAllErrors().forEach(err -> {
-				errores.put(((FieldError) err).getField(), "El campo " + ((FieldError) err).getField() + " " + err.getDefaultMessage());
+			errores.put(((FieldError) err).getField(), err.getDefaultMessage());
 		});
 		return ResponseEntity.badRequest().body(errores);
 	}
@@ -78,33 +74,38 @@ public class UserController extends CommonController<User, UserService> {
 		return oUser.isPresent() ? ResponseEntity.status(HttpStatus.ACCEPTED).body(oUser.get()) : ResponseEntity.badRequest().build();
 	}
 	
-	@GetMapping("/profile/{id}")
-	public ResponseEntity<?> getProfile(@PathVariable Long id) {
-		Optional<User> oUser = this.service.findById(id);
+	@GetMapping("/profile/{username}")
+	public ResponseEntity<?> getProfile(@PathVariable String username) {
+		Optional<User> oUser = this.service.findByUserName(username);
 		return oUser.isPresent() ? ResponseEntity.ok(oUser.get()) : ResponseEntity.badRequest().build();
 	}
 
 	@PostMapping("/follow")
-	public ResponseEntity<?> follow(@RequestBody Followers requestFollow){
-		Followers relationship = this.service.createRelationship(requestFollow);
+	public ResponseEntity<?> follow(@RequestBody Follower requestFollow){
+		Follower relationship = this.service.createRelationship(requestFollow);
 		return relationship == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(relationship);
 	}
 
-	@GetMapping("/followers/{id}")
-	public ResponseEntity<?> getFollowers(Pagination pagination, @PathVariable Long id) throws NotFoundException {
+	@GetMapping("/followers/{username}")
+	public ResponseEntity<?> getFollowers(Pagination pagination, @PathVariable String username) throws NotFoundException {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
-		return ResponseEntity.ok(this.service.findFollowersById(id, pageRequest));
+		return ResponseEntity.ok(this.service.findFollowersByUserName(username, pageRequest));
 	}
 
-	@GetMapping("/followings/{id}")
-	public ResponseEntity<?> getFollowings(Pagination pagination, @PathVariable Long id) throws NotFoundException {
+	@GetMapping("/followings/{username}")
+	public ResponseEntity<?> getFollowings(Pagination pagination, @PathVariable String username) throws NotFoundException {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
-		return ResponseEntity.ok(this.service.findFollowingsById(id, pageRequest));
+		return ResponseEntity.ok(this.service.findFollowingsByUserName(username, pageRequest));
 	}
 	
-	@GetMapping("/avatar/{id}")
-    public ResponseEntity<?> getAvatar(@PathVariable Long id) {
-		Optional<User> oUser = this.service.findById(id);
+	@GetMapping("/followingsAll/{username}")
+	public ResponseEntity<?> getFollowings(@PathVariable String username) throws NotFoundException {
+		return ResponseEntity.ok(this.service.findFollowingsByUserName(username));
+	}
+	
+	@GetMapping("/avatar/{username}")
+    public ResponseEntity<?> getAvatar(@PathVariable String username) {
+		Optional<User> oUser = this.service.findByUserName(username);
 		byte [] avatarFile = new byte[0];
 		if(oUser.get().getAvatarFile() != null){
 			avatarFile = oUser.get().getAvatarFile();

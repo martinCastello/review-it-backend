@@ -50,11 +50,12 @@ class UserControllerTest {
 	void itShouldReturnCreatedUser() throws Exception {
 		User entity = new User("Gisele", "Escobar", "gescobar@yahoo.com.ar", "gi", "123");
 		when(userService.findByUserName(entity.getUserName())).thenReturn(Optional.ofNullable(null));
+		when(userService.create(Mockito.any(User.class))).thenReturn(entity);
 	    when(userService.save(Mockito.any(User.class))).thenReturn(entity);
-	    mvc.perform(post("/users/signUp")
+	    mvc.perform(post("/users/login")
 	    		.content(mapper.writeValueAsString(entity))
 	    	    .contentType(MediaType.APPLICATION_JSON))
-	    	    .andExpect(status().isCreated())
+	    	    .andExpect(status().isOk())
 	    	    .andExpect(jsonPath("$.name").value(entity.getName()));
 	}
 	
@@ -64,10 +65,10 @@ class UserControllerTest {
 		User entity = new User("Gisele", "Escobar", "gescobar@yahoo.com.ar", "gi", "123");
 		when(userService.findByUserName(entity.getUserName())).thenReturn(Optional.of(entity));    
 	    
-		mvc.perform(post("/users/signUp")
+		mvc.perform(post("/users/login")
 	    		.content(mapper.writeValueAsString(entity))
 	    	    .contentType(MediaType.APPLICATION_JSON))
-	    	    .andExpect(status().isAccepted())
+	    	    .andExpect(status().isOk())
 	    	    .andExpect(jsonPath("$.name").value(entity.getName()));
 	}
 	

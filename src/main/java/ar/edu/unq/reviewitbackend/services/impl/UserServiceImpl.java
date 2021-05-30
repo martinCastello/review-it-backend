@@ -2,6 +2,7 @@ package ar.edu.unq.reviewitbackend.services.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,10 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
-import ar.edu.unq.reviewitbackend.entities.Followers;
+import ar.edu.unq.reviewitbackend.entities.Follower;
 import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.repositories.UserRepository;
 import ar.edu.unq.reviewitbackend.services.FollowerService;
@@ -36,6 +36,8 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 
 	@Autowired
 	private EntityManager em;
+	
+	private static final List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
 	
 	public Page<User> findAll(String inAll, String mail, String username, Pageable pageable) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -77,6 +79,25 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 		em.close();
 		return new PageImpl<>(content, pageable, total);
 	}
+	
+	public User create(User user) {
+		Optional<User> oUser = this.repository.findByUserName(user.getUserName());
+		if(oUser.isPresent()) {
+			if(oUser.get().getPassword().equals(user.getPassword())) {
+				return oUser.get();
+			}else {
+				oUser = this.repository.findByUserName(user.getUserName()+"1");
+				if(oUser.isPresent())
+					return oUser.get();
+				else {
+					user.setUserName(user.getUserName()+"1");
+					return this.save(user);
+				}
+			}
+		}else {
+			return this.save(user);
+		}
+	}
 
 	public Page<User> findAllByName(String name, Pageable pageable) {
 		return this.repository.findAllByName(name, pageable);
@@ -115,16 +136,16 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 	}
 
 	@Override
-	public Followers createRelationship(Followers requestFollow) {
+	public Follower createRelationship(Follower requestFollow) {
 		User from = this.findById(requestFollow.getIdFrom()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 		User to = this.findById(requestFollow.getIdTo()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-		Followers followRelation = new Followers(from, to);
+		Follower followRelation = new Follower(from, to);
 		return this.followerService.save(followRelation);
 	}
 
 	@Override
-	public Page<Followers> findFollowersById(Long id, Pageable pageable) throws NotFoundException {
-		User user = this.findById(id).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+	public Page<Follower> findFollowersByUserName(String userName, Pageable pageable) throws NotFoundException {
+		User user = this.findByUserName(userName).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 		return this.followerService.findAllByTo(user, pageable);
 	}
 
@@ -139,29 +160,34 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 	}
 	
 	@Override
-	public Page<Followers> findFollowingsById(Long id, Pageable pageable) throws NotFoundException{
-		User user = this.findById(id).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+	public Page<Follower> findFollowingsByUserName(String userName, Pageable pageable) throws NotFoundException{
+		User user = this.findByUserName(userName).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 		return this.followerService.findAllByFrom(user, pageable);
 	}
 
 	@Override
 	public User modify(User entity) throws NotFoundException {
 		User user = this.findByUserName(entity.getUserName()).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
-		
-		String fileName = StringUtils.cleanPath(entity.getAvatarFileForView().getOriginalFilename());
-		try {
-            if(fileName.contains("..")) {
-                throw new RuntimeException("Perdon! El nombre del archivo contiene secuencia de ruta invalida " + fileName);
-            }
-            user.setAvatarFile(entity.getAvatarFileForView().getBytes());
-            user.setAvatar(entity.getAvatar());
-    		user.setEmail(entity.getEmail());
-    		user.setName(entity.getName());
-    		user.setPassword(entity.getPassword());
-    		return this.save(user);
-        } catch (IOException ex) {
-            throw new RuntimeException("No se pudo almacenar el archivo " + fileName + ". Por favor intente nuevamente!", ex);
-        }
+		if(entity.getAvatarFileForView() != null) {
+			String fileContentType = entity.getAvatarFileForView().getContentType();
+			if(contentTypes.contains(fileContentType)) {
+		    	try {
+					user.setAvatarFile(entity.getAvatarFileForView().getBytes());
+		        } catch (IOException ex) {
+		            throw new RuntimeException("Hubo un error al procesar el archivo", ex);
+		        }
+		    } else {
+		    	throw new RuntimeException("Solamente se permite imagenes PNG y JPG ");
+		    }
+		}
+		user.setEmail(entity.getEmail());
+		return this.save(user);
+	}
+
+	@Override
+	public List<Follower> findFollowingsByUserName(String username) throws NotFoundException {
+		User user = this.findByUserName(username).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+		return this.followerService.findAllByFrom(user);
 	}
 	
 }

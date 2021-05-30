@@ -42,7 +42,7 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	@Autowired
 	private CommentaryService commentaryService;
 	
-	public Page<Review> findAll(String inAll, String title, String description, Integer points, String nameOrLastName, Long userId, Pageable pageable) {
+	public Page<Review> findAll(String inAll, String title, String description, Integer points, String nameOrLastName, String userName, Pageable pageable) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cr = cb.createQuery(Long.class);
 		Root<Review> root = cr.from(Review.class);
@@ -72,8 +72,9 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 			}
 			predicatesAnd.add(inClause);
 		}
-		if(userId != null){
-			predicatesAnd.add(cb.equal(root.get("user"), userId));
+		if(userName != null && userName.length() > 0){
+			Optional<User> oUser = this.userService.findByUserName(userName);
+			predicatesAnd.add(cb.equal(root.get("user"), oUser.get()));
 		}
 		if(inAll != null) {
 			predicatesOr.add(cb.like(root.get("title"), '%'+inAll.toLowerCase()+'%'));

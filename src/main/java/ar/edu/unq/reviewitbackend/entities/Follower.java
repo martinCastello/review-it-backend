@@ -16,7 +16,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @IdClass(FollowersPK.class)
-public class Followers extends Auditable {
+public class Follower extends Auditable {
 	
 	@Id
 	@ManyToOne(fetch=FetchType.EAGER)
@@ -36,9 +36,9 @@ public class Followers extends Auditable {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Long idTo;
 	
-    public Followers() {};
+    public Follower() {};
 
-    public Followers(User from, User to) {
+    public Follower(User from, User to) {
         this.from = from;
         this.to = to;
     }

@@ -1,12 +1,14 @@
 package ar.edu.unq.reviewitbackend.services.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ar.edu.unq.reviewitbackend.entities.Followers;
+import ar.edu.unq.reviewitbackend.entities.Follower;
 import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.repositories.FollowerRepository;
 import ar.edu.unq.reviewitbackend.services.FollowerService;
@@ -17,17 +19,22 @@ public class FollowerServiceImpl implements FollowerService{
 	@Autowired
 	private FollowerRepository repository;
 	
-	public Page<Followers> findAllByTo(User user, Pageable pageable) {
+	public Page<Follower> findAllByTo(User user, Pageable pageable) {
 		return this.repository.findAllByTo(user, pageable);
 	}
 
 	@Transactional
-	public Followers save(Followers followRelation) {
+	public Follower save(Follower followRelation) {
 		return this.repository.save(followRelation);
 	}
 
-	public Page<Followers> findAllByFrom(User user, Pageable pageable) {
+	public Page<Follower> findAllByFrom(User user, Pageable pageable) {
 		return this.repository.findAllByFrom(user, pageable);
+	}
+
+	@Override
+	public List<Follower> findAllByFrom(User user) {
+		return this.repository.findAllByFrom(user);
 	}
 
 }
