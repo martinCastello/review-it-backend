@@ -53,7 +53,11 @@ public class Review extends Auditable {
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy = "review")
 	private List<Commentary> commentaries;
+
+	private String img;
 	
+	private String overview;
+
 	public Review () {}
 	
 	public Review(String title, String description, Integer points, User user) {
