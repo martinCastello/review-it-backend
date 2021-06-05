@@ -60,10 +60,15 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 		if(nameOrLastName != null && nameOrLastName.length() > 0) {
 			String[] nameAndLastName = nameOrLastName.split(" ");
 			List<User> users = new ArrayList<>();
-			for(String dataUser : nameAndLastName) {
-				for(User user : this.userService.findByNameContainsOrLastNameContains(dataUser, dataUser)) {
-					if(!users.stream().map(u -> u.getUserName()).collect(Collectors.toList()).contains(user.getUserName()))
-						users.add(user);
+			if(nameAndLastName.length == 2) {
+				users.addAll(this.userService.findByNameContainsAndLastNameContains(nameAndLastName[0], nameAndLastName[1]));
+				users.addAll(this.userService.findByNameContainsAndLastNameContains(nameAndLastName[1], nameAndLastName[0]));
+			}else {
+				for(String dataUser : nameAndLastName) {
+					for(User user : this.userService.findByNameContainsOrLastNameContains(dataUser, dataUser)) {
+						if(!users.stream().map(u -> u.getUserName()).collect(Collectors.toList()).contains(user.getUserName()))
+							users.add(user);
+					}
 				}
 			}
 			In<User> inClause = cb.in(root.get("user"));
