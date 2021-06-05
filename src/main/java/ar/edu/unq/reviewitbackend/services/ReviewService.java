@@ -34,4 +34,6 @@ public interface ReviewService extends CommonService<Review>{
 
 	Page<Commentary> findAllCommetariesById(Long id, Pageable pageable) throws NotFoundException;
 
+	void deleteById(Long id) throws NotFoundException;
+
 }

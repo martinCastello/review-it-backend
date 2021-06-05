@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,6 +71,16 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
 		return ResponseEntity.ok(this.service.findAllCommetariesById(id, pageRequest));
 	}
+	
+	@DeleteMapping("{id}")
+    public ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
+        try{
+        	this.service.deleteById(id);
+        	return ResponseEntity.ok().build();
+        }catch(Exception e) {
+        	return ResponseEntity.badRequest().build();
+        }
+    }
 	
 	
 }

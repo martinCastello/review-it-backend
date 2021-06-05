@@ -180,5 +180,11 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 		Review review = this.findById(id).orElseThrow(() -> new NotFoundException("Reseña no encontrada"));
 		return this.commentaryService.findAllByReview(review, pageable);
 	}
+
+	@Override
+	public void deleteById(Long id) throws NotFoundException {
+		Review entity = this.findById(id).orElseThrow(() -> new NotFoundException("La reseña que pretende eliminar no se encuentra"));
+        this.repository.delete(entity);
+	}
 	
 }
