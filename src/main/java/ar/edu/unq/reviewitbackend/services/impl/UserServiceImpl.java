@@ -180,7 +180,8 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 		    	throw new RuntimeException("Solamente se permite imagenes PNG y JPG ");
 		    }
 		}
-		user.setEmail(entity.getEmail());
+		user.setName(entity.getName());
+		user.setLastName(entity.getLastName());
 		return this.save(user);
 	}
 

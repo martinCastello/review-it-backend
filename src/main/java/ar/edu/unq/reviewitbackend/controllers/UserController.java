@@ -54,10 +54,10 @@ public class UserController extends CommonController<User, UserService> {
 		User oEntity;
 		try {
 			oEntity = service.modify(entity);
+			return ResponseEntity.ok(oEntity);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-		return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
 	}
 	
 	protected ResponseEntity<?> validar(BindingResult result){
