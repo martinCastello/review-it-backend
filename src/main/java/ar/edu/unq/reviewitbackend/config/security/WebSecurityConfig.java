@@ -55,7 +55,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 	    //Permission for frontend
-		registry.addMapping("/**");
+		registry.addMapping("/**")
+		.allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
 	}
   
   

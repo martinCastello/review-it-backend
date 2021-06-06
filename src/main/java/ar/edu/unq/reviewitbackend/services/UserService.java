@@ -45,4 +45,6 @@ public interface UserService extends CommonService<User>{
 	User modify(User entity) throws NotFoundException;
 
 	List<Follower> findFollowingsByUserName(String username) throws NotFoundException;
+
+	void deleteRelationship(Follower requestFollow);
 }

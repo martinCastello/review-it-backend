@@ -72,7 +72,7 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 		return ResponseEntity.ok(this.service.findAllCommetariesById(id, pageRequest));
 	}
 	
-	@DeleteMapping("{id}")
+	@DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
         try{
         	this.service.deleteById(id);
