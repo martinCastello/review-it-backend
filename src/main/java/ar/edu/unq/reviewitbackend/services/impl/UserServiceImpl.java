@@ -180,7 +180,8 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 		    	throw new RuntimeException("Solamente se permite imagenes PNG y JPG ");
 		    }
 		}
-		user.setEmail(entity.getEmail());
+		user.setName(entity.getName());
+		user.setLastName(entity.getLastName());
 		return this.save(user);
 	}
 
@@ -196,6 +197,10 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 		User to = this.findById(requestFollow.getIdTo()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 		Follower relationship = this.followerService.findByFromAndTo(from, to).orElseThrow(() -> new RuntimeException("Relacion seguidor-seguido no encontrada"));
 		this.followerService.delete(relationship);
+	}
+	
+	public List<User> findByNameContainsAndLastNameContains(String name, String lastName) {
+		return this.repository.findByNameContainsAndLastNameContains(name, lastName);
 	}
 	
 }

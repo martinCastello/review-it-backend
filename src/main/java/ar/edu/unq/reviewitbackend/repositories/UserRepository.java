@@ -38,4 +38,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
 	List<User> findByNameContains(String nameOrLastName);
 
+	List<User> findByNameContainsAndLastNameContains(String name, String lastName);
+
 }
