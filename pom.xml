@@ -96,14 +96,13 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-	
-   <!-- https://mvnrepository.com/artifact/org.springframework/spring-websocket -->
-<dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-websocket</artifactId>
-    <version>5.3.7</version>
-</dependency>
-
+		<!-- Chat -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-websocket</artifactId>
+		</dependency>
+		<!-- End Chat -->
+		
  </dependencies>
 
 	<build>
