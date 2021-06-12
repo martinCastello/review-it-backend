@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.unq.reviewitbackend.entities.Commentary;
+import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
@@ -82,5 +83,26 @@ public class ReviewController extends CommonController<Review, ReviewService> {
         }
     }
 	
+	@PostMapping("/likear")
+	public ResponseEntity<?> like(@Valid @RequestBody Likes entity, BindingResult result) {
+		if(result.hasErrors()) {
+			return this.validar(result);
+		}
+		try{
+			Likes oEntity = service.like(entity);
+			return ResponseEntity.ok(oEntity);
+		}catch (NotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@GetMapping("/{id}/likes")
+	public ResponseEntity<?> getLikes(@PathVariable Long id) {
+		try{
+			return ResponseEntity.ok(this.service.getLikes(id));
+		}catch (NotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 	
 }
