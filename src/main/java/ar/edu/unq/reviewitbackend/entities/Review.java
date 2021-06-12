@@ -54,6 +54,10 @@ public class Review extends Auditable {
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Commentary> commentaries;
+	
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Likes> likes;
 
 	private String img;
 	
