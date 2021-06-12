@@ -192,6 +192,13 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 	}
 
 	@Override
+	public void deleteRelationship(Follower requestFollow) {
+		User from = this.findById(requestFollow.getIdFrom()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+		User to = this.findById(requestFollow.getIdTo()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+		Follower relationship = this.followerService.findByFromAndTo(from, to).orElseThrow(() -> new RuntimeException("Relacion seguidor-seguido no encontrada"));
+		this.followerService.delete(relationship);
+	}
+	
 	public List<User> findByNameContainsAndLastNameContains(String name, String lastName) {
 		return this.repository.findByNameContainsAndLastNameContains(name, lastName);
 	}

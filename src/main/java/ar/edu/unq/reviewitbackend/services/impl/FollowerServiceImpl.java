@@ -1,6 +1,7 @@
 package ar.edu.unq.reviewitbackend.services.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,16 @@ public class FollowerServiceImpl implements FollowerService{
 	@Override
 	public List<Follower> findAllByFrom(User user) {
 		return this.repository.findAllByFrom(user);
+	}
+
+	@Transactional
+	public void delete(Follower entity) {
+		this.repository.delete(entity);
+	}
+
+	@Override
+	public Optional<Follower> findByFromAndTo(User from, User to) {
+		return this.repository.findByFromAndTo(from, to);
 	}
 
 }

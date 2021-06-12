@@ -1,9 +1,12 @@
 package ar.edu.unq.reviewitbackend.services;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import ar.edu.unq.reviewitbackend.entities.Commentary;
+import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import javassist.NotFoundException;
 
@@ -33,5 +36,11 @@ public interface ReviewService extends CommonService<Review>{
 	Commentary createCommentary(Commentary entity) throws NotFoundException;
 
 	Page<Commentary> findAllCommetariesById(Long id, Pageable pageable) throws NotFoundException;
+
+	void deleteById(Long id) throws NotFoundException;
+
+	Likes like(Likes entity) throws NotFoundException;
+
+	List<Likes> getLikes(Long id) throws NotFoundException;
 
 }

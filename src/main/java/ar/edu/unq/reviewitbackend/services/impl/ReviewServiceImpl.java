@@ -21,10 +21,12 @@ import org.springframework.stereotype.Service;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
 import ar.edu.unq.reviewitbackend.entities.Commentary;
+import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.repositories.ReviewRepository;
 import ar.edu.unq.reviewitbackend.services.CommentaryService;
+import ar.edu.unq.reviewitbackend.services.LikeService;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
 import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.OrderBy;
@@ -41,6 +43,9 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	
 	@Autowired
 	private CommentaryService commentaryService;
+	
+	@Autowired
+	private LikeService likeService;
 	
 	public Page<Review> findAll(String inAll, String title, String description, Integer points, String nameOrLastName, String userName, Pageable pageable) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -184,6 +189,33 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	public Page<Commentary> findAllCommetariesById(Long id, Pageable pageable) throws NotFoundException{
 		Review review = this.findById(id).orElseThrow(() -> new NotFoundException("Reseña no encontrada"));
 		return this.commentaryService.findAllByReview(review, pageable);
+	}
+
+	@Override
+	public void deleteById(Long id) throws NotFoundException {
+		Review entity = this.findById(id).orElseThrow(() -> new NotFoundException("La reseña que pretende eliminar no se encuentra"));
+        this.repository.delete(entity);
+	}
+
+	@Override
+	public Likes like(Likes entity) throws NotFoundException {
+		Review review = this.findById(entity.getReviewId()).orElseThrow(() -> new NotFoundException("Reseña no encontrada"));
+		User user = this.userService.findById(entity.getUserId()).orElseThrow(() -> new NotFoundException("Usuario no encontrada"));
+		Optional<Likes> oEntity = this.likeService.findByReviewAndUser(review, user);
+		if(oEntity.isEmpty()) {
+			entity.setReview(review);
+			entity.setUser(user);
+			return this.likeService.save(entity);
+		}else {
+			this.likeService.delete(oEntity.get());
+			return null;
+		}
+	}
+
+	@Override
+	public List<Likes> getLikes(Long id) throws NotFoundException {
+		Review review = this.findById(id).orElseThrow(() -> new NotFoundException("Reseña no encontrada"));
+		return this.likeService.findByReview(review);
 	}
 	
 }

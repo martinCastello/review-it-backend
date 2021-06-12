@@ -1,6 +1,7 @@
 package ar.edu.unq.reviewitbackend.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,4 +18,8 @@ public interface FollowerService {
 	Follower save(Follower followRelation);
 
 	List<Follower> findAllByFrom(User user);
+
+	void delete(Follower requestFollow);
+
+	Optional<Follower> findByFromAndTo(User from, User to);
 }

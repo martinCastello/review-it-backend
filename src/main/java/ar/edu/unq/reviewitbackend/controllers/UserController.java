@@ -85,6 +85,16 @@ public class UserController extends CommonController<User, UserService> {
 		Follower relationship = this.service.createRelationship(requestFollow);
 		return relationship == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(relationship);
 	}
+	
+	@PostMapping("/unfollow")
+	public ResponseEntity<?> unfollow(@RequestBody Follower requestFollow){
+		try {
+			this.service.deleteRelationship(requestFollow);
+			return ResponseEntity.ok().build();
+		}catch (Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
+	}
 
 	@GetMapping("/followers/{username}")
 	public ResponseEntity<?> getFollowers(Pagination pagination, @PathVariable String username) throws NotFoundException {

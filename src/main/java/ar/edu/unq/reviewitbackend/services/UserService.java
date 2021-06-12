@@ -46,5 +46,7 @@ public interface UserService extends CommonService<User>{
 
 	List<Follower> findFollowingsByUserName(String username) throws NotFoundException;
 
+	void deleteRelationship(Follower requestFollow);
+
 	List<User> findByNameContainsAndLastNameContains(String name, String lastName);
 }
