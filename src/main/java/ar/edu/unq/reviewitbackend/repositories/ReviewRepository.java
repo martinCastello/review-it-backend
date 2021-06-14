@@ -38,4 +38,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>{
 
 	Page<Review> findAllByTitleContains(String title, Pageable pageable);
 
+	List<Review> findAllByUser(User user);
+
 }

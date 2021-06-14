@@ -176,6 +176,18 @@ public class User extends Auditable{
 		this.avatarFileForView = avatarFileForView;
 	}
 
+	public List<Review> getReviews() {
+		return reviews;
+	}
+
+	public Boolean getIsPrivate() {
+		return isPrivate;
+	}
+
+	public void setIsPrivate(Boolean isPrivate) {
+		this.isPrivate = isPrivate;
+	}
+
 //	public void addFollower(Followers follower){
 //		this.followers.add(follower);
 //	}

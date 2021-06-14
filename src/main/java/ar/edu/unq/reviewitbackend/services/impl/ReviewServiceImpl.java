@@ -21,9 +21,11 @@ import org.springframework.stereotype.Service;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
 import ar.edu.unq.reviewitbackend.entities.Commentary;
+import ar.edu.unq.reviewitbackend.entities.Genre;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
+import ar.edu.unq.reviewitbackend.repositories.GenreRepository;
 import ar.edu.unq.reviewitbackend.repositories.ReviewRepository;
 import ar.edu.unq.reviewitbackend.services.CommentaryService;
 import ar.edu.unq.reviewitbackend.services.LikeService;
@@ -47,7 +49,10 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	@Autowired
 	private LikeService likeService;
 	
-	public Page<Review> findAll(String inAll, String title, String description, Integer points, String nameOrLastName, String userName, Pageable pageable) {
+	@Autowired
+	private GenreRepository genreRepository;
+	
+	public Page<Review> findAll(String inAll, String title, String genre, String description, Integer points, String nameOrLastName, String userName, Pageable pageable) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cr = cb.createQuery(Long.class);
 		Root<Review> root = cr.from(Review.class);
@@ -58,6 +63,9 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 		}
 		if(description != null) {
 			predicatesAnd.add(cb.like(root.get("description"), '%'+description+'%'));
+		}
+		if(genre != null) {
+			predicatesAnd.add(cb.like(root.get("genres").as(String.class) , '%'+genre+'%'));
 		}
 		if(points != null) {
 			predicatesAnd.add(cb.equal(root.get("points"), points));
@@ -87,8 +95,9 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 			predicatesAnd.add(cb.equal(root.get("user"), oUser.get()));
 		}
 		if(inAll != null) {
-			predicatesOr.add(cb.like(root.get("title"), '%'+inAll.toLowerCase()+'%'));
-			predicatesOr.add(cb.like(root.get("description"), '%'+inAll.toLowerCase()+'%'));
+			predicatesOr.add(cb.like(root.get("title"), '%'+inAll+'%'));
+			predicatesOr.add(cb.like(root.get("genres").as(String.class), '%'+inAll+'%'));
+			predicatesOr.add(cb.like(root.get("description"), '%'+inAll+'%'));
 			try{
 				Integer.valueOf(inAll);
 				predicatesOr.add(cb.equal(root.get("points"), inAll));
@@ -170,10 +179,11 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 
 	@Override
 	public Review create(Review entity) {
-		Optional<User> oUser = this.userService.findById(entity.getUserId());
-		if(oUser.isEmpty())
-			throw new RuntimeException("No se encuentra un usuario con ese id");
-		entity.setUser(oUser.get());
+		User user = this.userService.findById(entity.getUserId()).orElseThrow(() -> new RuntimeException("No se encuentra un usuario con ese id")); 
+		List<Genre> genres = this.genreRepository.findAllById(entity.getGenresId());
+		List<String> genresDescription = genres.stream().map(genre->genre.getName()).collect(Collectors.toList());
+		entity.setGenres(genresDescription);
+		entity.setUser(user);
 		return this.save(entity);
 	}
 
@@ -216,6 +226,19 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	public List<Likes> getLikes(Long id) throws NotFoundException {
 		Review review = this.findById(id).orElseThrow(() -> new NotFoundException("Reseña no encontrada"));
 		return this.likeService.findByReview(review);
+	}
+
+	@Override
+	public List<Review> findAllByUser(User user) {
+		return this.repository.findAllByUser(user);
+	}
+
+	@Override
+	public Review modify(Review entity) throws NotFoundException {
+		Review review = this.findById(entity.getId()).orElseThrow(() -> new NotFoundException("Reseña no encontrada"));
+		review.setDescription(entity.getDescription());
+		review.setPoints(entity.getPoints());
+		return this.save(review);
 	}
 	
 }
