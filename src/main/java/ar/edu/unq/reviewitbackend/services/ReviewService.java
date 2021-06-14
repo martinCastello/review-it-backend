@@ -8,11 +8,12 @@ import org.springframework.data.domain.Pageable;
 import ar.edu.unq.reviewitbackend.entities.Commentary;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
+import ar.edu.unq.reviewitbackend.entities.User;
 import javassist.NotFoundException;
 
 public interface ReviewService extends CommonService<Review>{
 
-	Page<Review> findAll(String inAll, String title, String description, Integer points, String name, String userName, Pageable pageable);
+	Page<Review> findAll(String inAll, String title, String genre, String description, Integer points, String name, String userName, Pageable pageable);
 	
 	Page<Review> findAllByTitle(String title, Pageable pageable);
 	
@@ -42,5 +43,9 @@ public interface ReviewService extends CommonService<Review>{
 	Likes like(Likes entity) throws NotFoundException;
 
 	List<Likes> getLikes(Long id) throws NotFoundException;
+
+	List<Review> findAllByUser(User user);
+
+	Review modify(Review entity) throws NotFoundException;
 
 }

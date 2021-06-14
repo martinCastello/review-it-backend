@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,12 +34,13 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 	public ResponseEntity<?> getAllBy(Pagination pagination,
 			@RequestParam(value = "search", required = false) String inAll,
 			@RequestParam(value = "title", required = false) String title,
+			@RequestParam(value = "genre", required = false) String genre,
 			@RequestParam(value = "description", required = false) String description,
 			@RequestParam(value = "points", required = false) Integer points,
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "userName", required = false) String userName) {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
-		return ResponseEntity.ok(this.service.findAll(inAll, title, description, points, name, userName, pageRequest));
+		return ResponseEntity.ok(this.service.findAll(inAll, title, genre, description, points, name, userName, pageRequest));
 	}
 
 	@PostMapping
@@ -48,6 +50,19 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 		}
 		Review oEntity = service.create(entity);
 		return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
+	}
+	
+	@PutMapping
+	public ResponseEntity<?> modify(@Valid @RequestBody Review entity, BindingResult result) {
+		if(result.hasErrors()) {
+			return this.validar(result);
+		}
+		try{
+			Review oEntity = service.modify(entity);
+			return ResponseEntity.ok(oEntity);
+		}catch(NotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	
 	protected ResponseEntity<?> validar(BindingResult result){

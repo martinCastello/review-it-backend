@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,9 +22,12 @@ import org.springframework.stereotype.Service;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
 import ar.edu.unq.reviewitbackend.entities.Follower;
+import ar.edu.unq.reviewitbackend.entities.Likes;
+import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.repositories.UserRepository;
 import ar.edu.unq.reviewitbackend.services.FollowerService;
+import ar.edu.unq.reviewitbackend.services.ReviewService;
 import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.OrderBy;
 import javassist.NotFoundException;
@@ -33,6 +37,9 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 
 	@Autowired
 	private FollowerService followerService;
+	
+	@Autowired
+	private ReviewService reviewService;
 
 	@Autowired
 	private EntityManager em;
@@ -182,6 +189,7 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 		}
 		user.setName(entity.getName());
 		user.setLastName(entity.getLastName());
+		user.setIsPrivate(entity.getIsPrivate());
 		return this.save(user);
 	}
 
@@ -201,6 +209,13 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 	
 	public List<User> findByNameContainsAndLastNameContains(String name, String lastName) {
 		return this.repository.findByNameContainsAndLastNameContains(name, lastName);
+	}
+
+	@Override
+	public List<Likes> findLikesToUserName(String username) throws NotFoundException {
+		User user = this.findByUserName(username).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+		List<Review> reviews = this.reviewService.findAllByUser(user);
+		return reviews.stream().flatMap(review -> review.getLikes().stream().filter(like -> !like.getUser().getUserName().equalsIgnoreCase(username)).collect(Collectors.toList()).stream()).collect(Collectors.toList());
 	}
 	
 }

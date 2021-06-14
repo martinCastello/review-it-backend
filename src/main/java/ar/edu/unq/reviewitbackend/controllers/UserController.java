@@ -109,8 +109,13 @@ public class UserController extends CommonController<User, UserService> {
 	}
 	
 	@GetMapping("/followingsAll/{username}")
-	public ResponseEntity<?> getFollowings(@PathVariable String username) throws NotFoundException {
-		return ResponseEntity.ok(this.service.findFollowingsByUserName(username));
+	public ResponseEntity<?> getFollowings(@PathVariable String username) {
+		try {
+			return ResponseEntity.ok(this.service.findFollowingsByUserName(username));
+		}catch(NotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		
 	}
 	
 	@GetMapping("/avatar/{username}")
@@ -125,4 +130,13 @@ public class UserController extends CommonController<User, UserService> {
 				.contentType(MediaType.IMAGE_PNG)
 				.body(new ByteArrayResource(avatarFile));
     }
+	
+	@GetMapping("/likes/to/{username}")
+	public ResponseEntity<?> getLikes(@PathVariable String username) {
+		try{
+			return ResponseEntity.ok(this.service.findLikesToUserName(username));
+		} catch (NotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }
