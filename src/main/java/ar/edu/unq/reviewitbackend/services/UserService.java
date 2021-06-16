@@ -33,6 +33,8 @@ public interface UserService extends CommonService<User>{
 
 	Optional<User> findByUserName(String search);
 
+	Optional<User> findById(Long id);
+
 	Follower createRelationship(Follower requestFollow);
 
 	Page<Follower> findFollowersByUserName(String userName, Pageable pageable) throws NotFoundException;
