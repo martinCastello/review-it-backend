@@ -12,7 +12,7 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import ar.edu.unq.reviewitbackend.entities.Messages;
+import ar.edu.unq.reviewitbackend.entities.Message;
 import ar.edu.unq.reviewitbackend.services.UserService;
 
 
@@ -31,7 +31,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler{
     public void handleMessage(WebSocketSession session, WebSocketMessage message) throws Exception{
         for(WebSocketSession wSSession: webSOcketSessions){
             ObjectMapper mapper = new ObjectMapper();
-            Messages messageParse = mapper.readValue(message.getPayload().toString(), Messages.class);
+            Message messageParse = mapper.readValue(message.getPayload().toString(), Message.class);
             wSSession.sendMessage(message);
         }
     }

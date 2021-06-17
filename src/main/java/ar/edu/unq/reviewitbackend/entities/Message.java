@@ -2,8 +2,8 @@ package ar.edu.unq.reviewitbackend.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
@@ -12,13 +12,13 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.springframework.data.annotation.Id;
+import ar.edu.unq.reviewitbackend.entities.pk.MessagePK;
+import lombok.ToString;
 
+@ToString
 @Entity
-public class Messages{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@IdClass(MessagePK.class)
+public class Message extends Auditable{
 	
     @Id
 	@ManyToOne(fetch=FetchType.EAGER)
@@ -46,9 +46,9 @@ public class Messages{
     @Size(max = 512)
 	private String sender;
 	
-    public Messages() {};
+    public Message() {};
 
-    public Messages(User from, User to, String message, String sender) {
+    public Message(User from, User to, String message, String sender) {
         this.from = from;
         this.to = to;
         this.message = message;
