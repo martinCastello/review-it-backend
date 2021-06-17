@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import ar.edu.unq.reviewitbackend.entities.Commentary;
+import ar.edu.unq.reviewitbackend.entities.ComplaintReview;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
@@ -47,5 +48,7 @@ public interface ReviewService extends CommonService<Review>{
 	List<Review> findAllByUser(User user);
 
 	Review modify(Review entity) throws NotFoundException;
+
+	ComplaintReview denounce(ComplaintReview entity) throws NotFoundException;
 
 }
