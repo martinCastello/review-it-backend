@@ -10,6 +10,8 @@ public interface MessageService {
     
     List<Message> findAllByFrom(User user);
 
+    List<Message> findAll(String userFrom, String userTo);
+
 	Message save(Message message);
 
 }

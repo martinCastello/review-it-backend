@@ -33,6 +33,14 @@ public class MessageServiceImpl implements MessageService {
         return this.repository.findAllByFrom(user);
     }
 
+    @Override
+    public List<Message> findAll(String userFrom, String userTo) {
+        User fromUser = this.userService.findByUserName(userFrom).get();
+        User toUser = this.userService.findByUserName(userTo).get();
+
+        return this.repository.findByFromAndTo(fromUser, toUser);
+    }
+
     @Transactional
     public Message save(Message message) {
     	User from = this.userService.findById(message.getIdFrom()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
