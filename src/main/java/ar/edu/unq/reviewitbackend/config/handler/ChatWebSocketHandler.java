@@ -13,14 +13,14 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import ar.edu.unq.reviewitbackend.entities.Message;
-import ar.edu.unq.reviewitbackend.services.UserService;
+import ar.edu.unq.reviewitbackend.services.MessageService;
 
 
 public class ChatWebSocketHandler extends TextWebSocketHandler{
 
     private final List<WebSocketSession> webSOcketSessions = new ArrayList<>();
     @Autowired
-	protected UserService userService;
+	protected MessageService messageService;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception{
@@ -32,6 +32,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler{
         for(WebSocketSession wSSession: webSOcketSessions){
             ObjectMapper mapper = new ObjectMapper();
             Message messageParse = mapper.readValue(message.getPayload().toString(), Message.class);
+            this.messageService.save(messageParse);
             wSSession.sendMessage(message);
         }
     }
