@@ -14,6 +14,8 @@ public interface MessageRepository extends JpaRepository<Message, Long>{
     List<Message> findAllByTo(User user);
 	
     List<Message> findAllByFrom(User user);
-	@Query("SELECT m FROM message WHERE (m.from_user_fk = 2 AND m.to_user_fk = 1) OR (m.to_user_fk = 2 AND m.from_user_fk= 1) ORDER BY m.id ASC")
+    
+ // 
+ 	@Query("SELECT m FROM Message m WHERE (m.from = 2 AND m.to = 1) OR (m = 2 AND m= 1) ORDER BY m.id ASC")
 	List<Message> findByFromAndTo(User userFrom, User userTo);
 }

@@ -8,7 +8,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
@@ -32,10 +31,12 @@ public class Message{
     
 	@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="from_user_fk")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private User from;
 
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="to_user_fk")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private User to;
 
 	@Transient
@@ -134,6 +135,10 @@ public class Message{
 
 	public void setLastModifiedDate(Date lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
+	}
+
+	public Long getId() {
+		return id;
 	}
     
     
