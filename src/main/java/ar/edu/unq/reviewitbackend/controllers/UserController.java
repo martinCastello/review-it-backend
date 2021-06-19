@@ -36,7 +36,7 @@ import javassist.NotFoundException;
 public class UserController extends CommonController<User, UserService> {
 	
 	@Autowired
-	protected MessageService messageService;
+	private MessageService messageService;
 	
 	@GetMapping
 	public ResponseEntity<?> getAll(Pagination pagination,
