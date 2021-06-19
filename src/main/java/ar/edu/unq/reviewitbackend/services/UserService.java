@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 import ar.edu.unq.reviewitbackend.entities.Follower;
 import ar.edu.unq.reviewitbackend.entities.Likes;
+import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
 import javassist.NotFoundException;
 
@@ -52,4 +53,6 @@ public interface UserService extends CommonService<User>{
 	List<User> findByNameContainsAndLastNameContains(String name, String lastName);
 
 	List<Likes> findLikesToUserName(String username) throws NotFoundException;
+
+	List<Review> findReviewsByUserName(String username) throws NotFoundException;
 }

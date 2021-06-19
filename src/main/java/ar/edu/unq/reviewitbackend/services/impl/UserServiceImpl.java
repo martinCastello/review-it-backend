@@ -217,5 +217,11 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 		List<Review> reviews = this.reviewService.findAllByUser(user);
 		return reviews.stream().flatMap(review -> review.getLikes().stream().filter(like -> !like.getUser().getUserName().equalsIgnoreCase(username)).collect(Collectors.toList()).stream()).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<Review> findReviewsByUserName(String username) throws NotFoundException {
+		User user = this.findByUserName(username).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+		return this.reviewService.findAllByUser(user);
+	}
 	
 }
