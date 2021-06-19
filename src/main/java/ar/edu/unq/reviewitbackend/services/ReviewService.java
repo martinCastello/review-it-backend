@@ -44,8 +44,8 @@ public interface ReviewService extends CommonService<Review>{
 
 	List<Likes> getLikes(Long id) throws NotFoundException;
 
-	List<Review> findAllByUser(User user);
-
 	Review modify(Review entity) throws NotFoundException;
+
+	List<Review> findAllByUser(User user);
 
 }

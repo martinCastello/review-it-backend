@@ -154,4 +154,14 @@ public class UserController extends CommonController<User, UserService> {
 		return ResponseEntity.ok(messages);
 	}
 
+	
+	@GetMapping("/{username}/reviews")
+	public ResponseEntity<?> getReviews(@PathVariable String username) {
+		try {
+			return ResponseEntity.ok(this.service.findReviewsByUserName(username));
+		}catch(NotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		
+	}
 }
