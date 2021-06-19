@@ -38,7 +38,7 @@ public class MessageServiceImpl implements MessageService {
         User fromUser = this.userService.findByUserName(userFrom).get();
         User toUser = this.userService.findByUserName(userTo).get();
 
-        return this.repository.findByFromAndTo(fromUser, toUser);
+        return this.repository.findByFromAndTo(fromUser.getId(), toUser.getId());
     }
 
     @Transactional
