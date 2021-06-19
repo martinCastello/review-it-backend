@@ -1,11 +1,13 @@
 package ar.edu.unq.reviewitbackend.controllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -22,7 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.unq.reviewitbackend.entities.Follower;
+import ar.edu.unq.reviewitbackend.entities.Message;
 import ar.edu.unq.reviewitbackend.entities.User;
+import ar.edu.unq.reviewitbackend.services.MessageService;
 import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
 import javassist.NotFoundException;
@@ -30,6 +34,9 @@ import javassist.NotFoundException;
 @RestController
 @RequestMapping("/users")
 public class UserController extends CommonController<User, UserService> {
+	
+	@Autowired
+	protected MessageService messageService;
 	
 	@GetMapping
 	public ResponseEntity<?> getAll(Pagination pagination,
@@ -139,6 +146,14 @@ public class UserController extends CommonController<User, UserService> {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+
+	@GetMapping("/messages/{usernameTo}/{usernameFrom}")
+	public ResponseEntity<?> getLikes(@PathVariable String usernameTo, @PathVariable String usernameFrom ) {
+		List<Message> messages= this.messageService.findAll(usernameFrom, usernameTo);
+
+		return ResponseEntity.ok(messages);
+	}
+
 	
 	@GetMapping("/{username}/reviews")
 	public ResponseEntity<?> getReviews(@PathVariable String username) {
