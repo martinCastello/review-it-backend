@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
 import ar.edu.unq.reviewitbackend.entities.Commentary;
+import ar.edu.unq.reviewitbackend.entities.ComplaintReview;
 import ar.edu.unq.reviewitbackend.entities.Genre;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
@@ -28,6 +29,7 @@ import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.repositories.GenreRepository;
 import ar.edu.unq.reviewitbackend.repositories.ReviewRepository;
 import ar.edu.unq.reviewitbackend.services.CommentaryService;
+import ar.edu.unq.reviewitbackend.services.ComplaintService;
 import ar.edu.unq.reviewitbackend.services.LikeService;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
 import ar.edu.unq.reviewitbackend.services.UserService;
@@ -51,6 +53,9 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	
 	@Autowired
 	private GenreRepository genreRepository;
+	
+	@Autowired
+	private ComplaintService complaintService;
 	
 	public Page<Review> findAll(String inAll, String title, String genre, String description, Integer points, String nameOrLastName, String userName, Pageable pageable) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -239,6 +244,17 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 		review.setDescription(entity.getDescription());
 		review.setPoints(entity.getPoints());
 		return this.save(review);
+	}
+
+	@Override
+	public ComplaintReview denounce(ComplaintReview entity) throws NotFoundException {
+		Review review = this.findById(entity.getReviewId()).orElseThrow(() -> new NotFoundException("Reseña no encontrada"));
+		User complainant = this.userService.findById(entity.getUserId()).orElseThrow(() -> new NotFoundException("Usuario no encontrada"));
+		entity.setReview(review);
+		entity.setUser(complainant);
+		entity.setReason(entity.getReason());
+		entity.setComment(entity.getComment());
+		return this.complaintService.save(entity);
 	}
 	
 }
