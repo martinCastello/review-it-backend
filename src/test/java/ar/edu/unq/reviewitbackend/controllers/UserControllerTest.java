@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.services.FollowerService;
+import ar.edu.unq.reviewitbackend.services.MessageService;
 import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
 
@@ -42,6 +43,9 @@ class UserControllerTest {
 	
 	@MockBean
 	private FollowerService followerService;
+	
+	@MockBean
+	private MessageService messageService;
 	
 	private ObjectMapper mapper = new ObjectMapper();
 	
