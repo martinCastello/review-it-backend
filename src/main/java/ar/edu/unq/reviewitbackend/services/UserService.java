@@ -6,10 +6,12 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import ar.edu.unq.reviewitbackend.entities.ComplaintUser;
 import ar.edu.unq.reviewitbackend.entities.Follower;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
+import ar.edu.unq.reviewitbackend.exceptions.ComplaintTypeException;
 import javassist.NotFoundException;
 
 public interface UserService extends CommonService<User>{
@@ -55,4 +57,16 @@ public interface UserService extends CommonService<User>{
 	List<Likes> findLikesToUserName(String username) throws NotFoundException;
 
 	List<Review> findReviewsByUserName(String username) throws NotFoundException;
+	
+	ComplaintUser denounce(ComplaintUser entity) throws NotFoundException, ComplaintTypeException;
+
+	User addBlockedUser(User user, User to);
+
+	void addComplaint(User to, Integer integer);
+	
+	void analyzeSetPenaltyDate(User user, Integer complaintCount);
+
+	void addBlockedReview(User user, Review review);
+
+	void resetComplaintCountForSchedule();
 }

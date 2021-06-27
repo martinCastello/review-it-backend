@@ -1,5 +1,6 @@
 package ar.edu.unq.reviewitbackend.repositories;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,5 +40,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	List<User> findByNameContains(String nameOrLastName);
 
 	List<User> findByNameContainsAndLastNameContains(String name, String lastName);
+
+	List<User> findByBlockedIsTrueAndLastPenaltyDateBefore(Date lastUpdated);
 
 }

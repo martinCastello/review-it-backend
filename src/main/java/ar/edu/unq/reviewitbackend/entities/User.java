@@ -1,5 +1,6 @@
 package ar.edu.unq.reviewitbackend.entities;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -7,7 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
@@ -22,9 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.ToString;
-
-@ToString
 @Entity
 public class User extends Auditable{
 	
@@ -85,6 +86,35 @@ public class User extends Auditable{
 	@Transient
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private MultipartFile avatarFileForView;
+	
+	@Column(name = "complaint_level")
+	private Integer complaintLevel = 0;
+	
+	@JsonIgnore
+	@LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy="to")
+    private List<ComplaintUser> complaints;
+	
+	private boolean blocked = false;
+	
+	@Column(name = "last_penalty_date")
+	private Date lastPenaltyDate;
+	
+	@ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(
+    		  name = "user_blocked", 
+    		  joinColumns = @JoinColumn(name = "user_id"), 
+    		  inverseJoinColumns = @JoinColumn(name = "user_blocked_id"))
+    private List<User> blockedUsers;
+    
+    @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(
+    		  name = "review_blocked", 
+    		  joinColumns = @JoinColumn(name = "user_id"), 
+    		  inverseJoinColumns = @JoinColumn(name = "review_id"))
+    private List<Review> blockedReviews;
 	
 	public User () {}
 	
@@ -187,12 +217,62 @@ public class User extends Auditable{
 	public void setIsPrivate(Boolean isPrivate) {
 		this.isPrivate = isPrivate;
 	}
+	
+	public User addBlockedUser(User user) {
+		this.blockedUsers.add(user);
+		return this;
+	}
 
-//	public void addFollower(Followers follower){
-//		this.followers.add(follower);
-//	}
-//
-//	public void addFollow(Followers follow){
-//		this.following.add(follow);
-//	}
+	public List<ComplaintUser> getComplaints() {
+		return complaints;
+	}
+
+	public void addComplaint(ComplaintUser complaint) {
+		this.complaints.add(complaint);
+	}
+
+	public Date getLastPenaltyDate() {
+		return lastPenaltyDate;
+	}
+
+	public void setLastPenaltyDate(Date lastPenaltyDate) {
+		this.lastPenaltyDate = lastPenaltyDate;
+	}
+
+	public Integer getComplaintLevel() {
+		return complaintLevel;
+	}
+	
+	public void resetComplaintLevel() {
+		this.complaintLevel = 0;
+	}
+
+	public void addComplaint(Integer penalty) {
+		this.complaintLevel+=penalty;
+	}
+
+	public List<Review> getBlockedReviews() {
+		return blockedReviews;
+	}
+
+	public void addBlockedReview(Review blockedReviews) {
+		this.blockedReviews.add(blockedReviews);
+	}
+
+	public boolean removeBlockedUser(User userToUnblock) {
+		return this.blockedUsers.remove(userToUnblock);
+	}
+
+	public boolean isBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
+	}
+
+	public List<User> getBlockedUsers() {
+		return blockedUsers;
+	}
+
 }

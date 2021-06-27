@@ -3,6 +3,7 @@ package ar.edu.unq.reviewitbackend.services.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,18 +15,25 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
+import ar.edu.unq.reviewitbackend.entities.ComplaintUser;
 import ar.edu.unq.reviewitbackend.entities.Follower;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
+import ar.edu.unq.reviewitbackend.exceptions.ComplaintTypeException;
 import ar.edu.unq.reviewitbackend.repositories.UserRepository;
+import ar.edu.unq.reviewitbackend.services.ComplaintService;
 import ar.edu.unq.reviewitbackend.services.FollowerService;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
 import ar.edu.unq.reviewitbackend.services.UserService;
@@ -35,6 +43,14 @@ import javassist.NotFoundException;
 @Service
 public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> implements UserService{
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+	
+	@Value("${time.offset.in.seconds}")
+	private long timeOffsetInSeconds;
+	
+	@Value("${complaint.level}")
+	private Integer complaintLevel;
+	
 	@Autowired
 	private FollowerService followerService;
 	
@@ -43,6 +59,9 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 
 	@Autowired
 	private EntityManager em;
+	
+	@Autowired
+	private ComplaintService complaintService;
 	
 	private static final List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
 	
@@ -147,7 +166,13 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 		User from = this.findById(requestFollow.getIdFrom()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 		User to = this.findById(requestFollow.getIdTo()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 		Follower followRelation = new Follower(from, to);
+		this.removeBlockedUser(from, to);
 		return this.followerService.save(followRelation);
+	}
+
+	private void removeBlockedUser(User user, User userToUnblock) {
+		if(user.removeBlockedUser(userToUnblock))
+			complaintService.removeIfPenaltyDateIsBeforeOrNull(user, userToUnblock);
 	}
 
 	@Override
@@ -222,6 +247,58 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 	public List<Review> findReviewsByUserName(String username) throws NotFoundException {
 		User user = this.findByUserName(username).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 		return this.reviewService.findAllByUser(user);
+	}
+	
+	@Override
+	public ComplaintUser denounce(ComplaintUser entity) throws NotFoundException, ComplaintTypeException {
+		User complainant = this.findById(entity.getUserId()).orElseThrow(() -> new NotFoundException("Usuario denunciante no encontrado"));
+		User denouncedUser = this.findById(entity.getToId()).orElseThrow(() -> new NotFoundException("Usuario denunciado no encontrado"));
+		entity.setUser(complainant);
+		entity.setTo(denouncedUser);
+		entity.setReason(entity.getReason());
+		entity.setComment(entity.getComment());
+		return this.complaintService.apply(entity);
+	}
+
+	@Override
+	public User addBlockedUser(User user, User userToBlock) {
+		LOGGER.info("El usuario " + user.getUserName() + " se bloqueo al usuario " + userToBlock.getUserName());
+		return user.addBlockedUser(userToBlock);
+	}
+
+	@Override
+	public void addComplaint(User user, Integer penalty) {
+		user.addComplaint(penalty);
+	}
+	
+	public void analyzeSetPenaltyDate(User user, Integer complaintCount) {
+		if(!user.isBlocked() && user.getComplaintLevel() >= complaintCount) {
+			Date now = new Date();
+			user.setBlocked(true);
+			user.setLastPenaltyDate(now);
+			user.resetComplaintLevel();
+		}
+	}
+	
+	@Override
+	public void addBlockedReview(User user, Review review) {
+		LOGGER.info("El usuario " + user.getUserName() + " bloquea la reseña de la peli/serie " + review.getTitle() 
+			+ " del usuario " + review.getUser().getUserName());
+		user.addBlockedReview(review);
+	}
+
+	@Override
+	@Transactional
+	public void resetComplaintCountForSchedule() {
+		// Date lastUpdated = new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * timeOffsetInDays);
+		Date lastUpdated = new Date(new Date().getTime() - 1000 * timeOffsetInSeconds);
+		List<User> userList = this.repository.findByBlockedIsTrueAndLastPenaltyDateBefore(lastUpdated);
+		for(User user : userList) {
+			user.setBlocked(false);
+		}
+		if(!userList.isEmpty()) {
+			this.saveAll(userList);
+		}
 	}
 	
 }
