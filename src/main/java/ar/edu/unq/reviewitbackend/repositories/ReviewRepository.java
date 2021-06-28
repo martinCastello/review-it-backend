@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
@@ -39,5 +40,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long>{
 	Page<Review> findAllByTitleContains(String title, Pageable pageable);
 
 	List<Review> findAllByUser(User user);
+
+	@Query("SELECT r FROM review r LEFT JOIN user u ON r.user_id = u.id WHERE u.is_private != TRUE OR u.id IN :ids ORDER BY u.is_private DESC, r.id desc ")
+	Page<Review> listOfReviewOfUsers(@Param("ids")List<Long> x1,Pageable pageable);
 
 }

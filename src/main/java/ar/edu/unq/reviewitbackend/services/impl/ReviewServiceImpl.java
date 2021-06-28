@@ -256,5 +256,10 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 		entity.setComment(entity.getComment());
 		return this.complaintService.save(entity);
 	}
+
+	@Override
+	public Page<Review> listOfReviewOfUsers(List<Long> userIds, Pageable page){
+		return this.repository.listOfReviewOfUsers(userIds, page);
+	}
 	
 }

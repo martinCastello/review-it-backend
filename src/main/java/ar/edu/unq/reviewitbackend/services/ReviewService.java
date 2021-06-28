@@ -51,4 +51,5 @@ public interface ReviewService extends CommonService<Review>{
 
 	List<Review> findAllByUser(User user);
 
+	Page<Review> listOfReviewOfUsers(List<Long> userIds, Pageable page);
 }
