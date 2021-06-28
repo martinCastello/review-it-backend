@@ -1,6 +1,7 @@
 package ar.edu.unq.reviewitbackend.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,5 +40,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long>{
 	Page<Review> findAllByTitleContains(String title, Pageable pageable);
 
 	List<Review> findAllByUser(User user);
+
+	Optional<User> findByTitleAndUser(String title, User user);
 
 }

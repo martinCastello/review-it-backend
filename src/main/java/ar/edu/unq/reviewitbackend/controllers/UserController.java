@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.PageRequest;
@@ -23,9 +25,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ar.edu.unq.reviewitbackend.entities.ComplaintUser;
 import ar.edu.unq.reviewitbackend.entities.Follower;
 import ar.edu.unq.reviewitbackend.entities.Message;
 import ar.edu.unq.reviewitbackend.entities.User;
+import ar.edu.unq.reviewitbackend.exceptions.ComplaintTypeException;
 import ar.edu.unq.reviewitbackend.services.MessageService;
 import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
@@ -34,6 +38,8 @@ import javassist.NotFoundException;
 @RestController
 @RequestMapping("/users")
 public class UserController extends CommonController<User, UserService> {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 	
 	@Autowired
 	private MessageService messageService;
@@ -163,5 +169,21 @@ public class UserController extends CommonController<User, UserService> {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		
+	}
+	
+	@PostMapping("/denounce")
+	public ResponseEntity<?> denounce(@Valid @RequestBody ComplaintUser entity, BindingResult result) {
+		if(result.hasErrors()) {
+			return this.validar(result);
+		}
+		try {
+			ComplaintUser oEntity = service.denounce(entity);
+			return ResponseEntity.ok(oEntity);
+		}catch(NotFoundException | ComplaintTypeException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}catch(Exception e) {
+			LOGGER.error(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 }

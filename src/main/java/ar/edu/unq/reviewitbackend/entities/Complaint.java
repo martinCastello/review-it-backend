@@ -12,6 +12,8 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import ar.edu.unq.reviewitbackend.entities.enums.ComplaintReason;
+
 @MappedSuperclass
 public abstract class Complaint extends Auditable{
 
@@ -19,16 +21,16 @@ public abstract class Complaint extends Auditable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	
-	@NotNull
 	@ManyToOne
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private User user;
 
+	@NotNull
 	@Transient
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long userId;
 	
-	@NotNull
+	@NotNull(message = "Debe indicar un motivo de la denuncia")
 	@Enumerated(EnumType.STRING)
 	private ComplaintReason reason;
 	

@@ -5,7 +5,10 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -23,6 +26,7 @@ import ar.edu.unq.reviewitbackend.entities.Commentary;
 import ar.edu.unq.reviewitbackend.entities.ComplaintReview;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
+import ar.edu.unq.reviewitbackend.exceptions.ComplaintTypeException;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
 import javassist.NotFoundException;
@@ -30,6 +34,8 @@ import javassist.NotFoundException;
 @RestController
 @RequestMapping(path="/reviews")
 public class ReviewController extends CommonController<Review, ReviewService> {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReviewController.class);
 	
 	@GetMapping
 	public ResponseEntity<?> getAllBy(Pagination pagination,
@@ -49,8 +55,15 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 		if(result.hasErrors()) {
 			return this.validar(result);
 		}
-		Review oEntity = service.create(entity);
-		return oEntity == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(oEntity);
+		try{
+			Review oEntity = service.create(entity);
+			return ResponseEntity.ok(oEntity);
+		}catch(NotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}catch(Exception e) {
+			LOGGER.error(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 	
 	@PutMapping
@@ -84,9 +97,16 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 	}
 	
 	@GetMapping("/{id}/comments")
-	public ResponseEntity<?> getComments(Pagination pagination, @PathVariable Long id) throws NotFoundException {
+	public ResponseEntity<?> getComments(Pagination pagination, @PathVariable Long id) {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
-		return ResponseEntity.ok(this.service.findAllCommetariesById(id, pageRequest));
+		try {
+			return ResponseEntity.ok(this.service.findAllCommetariesById(id, pageRequest));
+		}catch(NotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}catch(Exception e) {
+			LOGGER.error(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 	
 	@DeleteMapping("/{id}")
@@ -129,8 +149,11 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 		try {
 			ComplaintReview oEntity = service.denounce(entity);
 			return ResponseEntity.ok(oEntity);
-		}catch(NotFoundException e) {
+		}catch(NotFoundException | ComplaintTypeException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
+		}catch(Exception e) {
+			LOGGER.error(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 	
