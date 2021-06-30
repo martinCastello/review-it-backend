@@ -1,14 +1,12 @@
 package ar.edu.unq.reviewitbackend.controllers;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -24,22 +22,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.unq.reviewitbackend.entities.Commentary;
 import ar.edu.unq.reviewitbackend.entities.ComplaintReview;
-import ar.edu.unq.reviewitbackend.entities.Follower;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
-import ar.edu.unq.reviewitbackend.entities.User;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
-import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
 import javassist.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @RestController
 @RequestMapping(path="/reviews")
 public class ReviewController extends CommonController<Review, ReviewService> {
-	
-	@Autowired
-	private UserService userService;
 
 	@GetMapping
 	public ResponseEntity<?> getAllBy(Pagination pagination,
@@ -54,16 +45,18 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 		return ResponseEntity.ok(this.service.findAll(inAll, title, genre, description, points, name, userName, pageRequest));
 	}
 
-	@GetMapping("/getForUser/{forUser}")
-	public ResponseEntity<?> getAllForUser(Pagination pagination, @RequestParam(value="forId") String forUser) throws NotFoundException{
+	@GetMapping("/getForUser/{userName}")
+	public ResponseEntity<?> getAllForUser(Pagination pagination, @PathVariable String userName) {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
-		User user = this.userService.findByUserName(forUser).get();
-		List<Follower> followings = this.userService.findFollowingsByUserName(forUser);
-		List<Long> listOfIds = followings.stream().map(Follower::getIdFrom).collect(Collectors.toList());
-		listOfIds.add(user.getId());
-		Page<Review> reviewsForUser = this.service.listOfReviewOfUsers(listOfIds, pageRequest);
-		return ResponseEntity.ok(reviewsForUser);
+		try {
+			return ResponseEntity.ok(this.service.findReviewsForUser(userName, pageRequest));
+		}catch(NotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
 	}
+	
 	@PostMapping
 	public ResponseEntity<?> create(@Valid @RequestBody Review entity, BindingResult result) {
 		if(result.hasErrors()) {
