@@ -188,7 +188,7 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	@Override
 	public Review create(Review entity) throws ReviewExistException, NotFoundException {
 		User user = this.userService.findById(entity.getUserId()).orElseThrow(() -> new NotFoundException("No se encuentra un usuario con ese id")); 
-		this.repository.findByTitleAndUser(entity.getTitle(), user).orElseThrow(() -> new ReviewExistException(entity.getTitle()));
+		// this.repository.findByTitleAndUser(entity.getTitle(), user).orElseThrow(() -> new ReviewExistException(entity.getTitle()));
 		List<Genre> genres = this.genreRepository.findAllById(entity.getGenresId());
 		List<String> genresDescription = genres.stream().map(genre->genre.getName()).collect(Collectors.toList());
 		entity.setGenres(genresDescription);
@@ -265,10 +265,10 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	@Override
 	public Page<Review> findReviewsForUser(String userName, Pageable pageble) throws NotFoundException {
 		User user = this.userService.findByUserName(userName).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
-		List<Follower> followings = this.userService.findFollowingsByUserName(userName);
-		List<Long> listOfIds = followings.stream().map(Follower::getIdTo).collect(Collectors.toList());
-		listOfIds.add(user.getId());
+		List<User> followings = this.userService.findFollowingsByUserName(userName).stream().map(Follower::getTo).collect(Collectors.toList());
+		List<Long> listOfIds = followings.stream().map(User::getId).collect(Collectors.toList());
 		// Hay que crear lista de los id que no se tienen que incluir (se podra hacer una vez mergeado a main)
+		listOfIds.add(user.getId());
 		return this.repository.listOfReviewOfUsers(listOfIds, pageble);
 	}
 	
