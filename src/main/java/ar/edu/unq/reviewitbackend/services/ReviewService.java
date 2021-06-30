@@ -10,6 +10,8 @@ import ar.edu.unq.reviewitbackend.entities.ComplaintReview;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
+import ar.edu.unq.reviewitbackend.exceptions.ComplaintTypeException;
+import ar.edu.unq.reviewitbackend.exceptions.ReviewExistException;
 import javassist.NotFoundException;
 
 public interface ReviewService extends CommonService<Review>{
@@ -33,7 +35,7 @@ public interface ReviewService extends CommonService<Review>{
 
 	Page<Review> findAllBySearch(String search, Pageable pageable);
 
-	Review create(Review entity);
+	Review create(Review entity) throws ReviewExistException, NotFoundException;
 
 	Commentary createCommentary(Commentary entity) throws NotFoundException;
 
@@ -47,7 +49,7 @@ public interface ReviewService extends CommonService<Review>{
 
 	Review modify(Review entity) throws NotFoundException;
 
-	ComplaintReview denounce(ComplaintReview entity) throws NotFoundException;
+	ComplaintReview denounce(ComplaintReview entity) throws NotFoundException, ComplaintTypeException;
 
 	List<Review> findAllByUser(User user);
 

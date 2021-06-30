@@ -12,11 +12,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Table(name="complaint_review")
 public class ComplaintReview extends Complaint{
 
-	@NotNull
 	@ManyToOne
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Review review;
 	
+	@NotNull
 	@Transient
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long reviewId;

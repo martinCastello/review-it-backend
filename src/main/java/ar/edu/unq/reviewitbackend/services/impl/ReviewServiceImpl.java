@@ -27,6 +27,8 @@ import ar.edu.unq.reviewitbackend.entities.Genre;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
+import ar.edu.unq.reviewitbackend.exceptions.ComplaintTypeException;
+import ar.edu.unq.reviewitbackend.exceptions.ReviewExistException;
 import ar.edu.unq.reviewitbackend.repositories.GenreRepository;
 import ar.edu.unq.reviewitbackend.repositories.ReviewRepository;
 import ar.edu.unq.reviewitbackend.services.CommentaryService;
@@ -184,8 +186,9 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
     }
 
 	@Override
-	public Review create(Review entity) {
-		User user = this.userService.findById(entity.getUserId()).orElseThrow(() -> new RuntimeException("No se encuentra un usuario con ese id")); 
+	public Review create(Review entity) throws ReviewExistException, NotFoundException {
+		User user = this.userService.findById(entity.getUserId()).orElseThrow(() -> new NotFoundException("No se encuentra un usuario con ese id")); 
+		this.repository.findByTitleAndUser(entity.getTitle(), user).orElseThrow(() -> new ReviewExistException(entity.getTitle()));
 		List<Genre> genres = this.genreRepository.findAllById(entity.getGenresId());
 		List<String> genresDescription = genres.stream().map(genre->genre.getName()).collect(Collectors.toList());
 		entity.setGenres(genresDescription);
@@ -248,14 +251,14 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	}
 
 	@Override
-	public ComplaintReview denounce(ComplaintReview entity) throws NotFoundException {
+	public ComplaintReview denounce(ComplaintReview entity) throws NotFoundException, ComplaintTypeException {
 		Review review = this.findById(entity.getReviewId()).orElseThrow(() -> new NotFoundException("Reseña no encontrada"));
 		User complainant = this.userService.findById(entity.getUserId()).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 		entity.setReview(review);
 		entity.setUser(complainant);
 		entity.setReason(entity.getReason());
 		entity.setComment(entity.getComment());
-		return this.complaintService.save(entity);
+		return this.complaintService.apply(entity);
 	}
 
 
