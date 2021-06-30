@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
 import ar.edu.unq.reviewitbackend.entities.Commentary;
 import ar.edu.unq.reviewitbackend.entities.ComplaintReview;
+import ar.edu.unq.reviewitbackend.entities.Follower;
 import ar.edu.unq.reviewitbackend.entities.Genre;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
@@ -252,12 +253,23 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	@Override
 	public ComplaintReview denounce(ComplaintReview entity) throws NotFoundException, ComplaintTypeException {
 		Review review = this.findById(entity.getReviewId()).orElseThrow(() -> new NotFoundException("Reseña no encontrada"));
-		User complainant = this.userService.findById(entity.getUserId()).orElseThrow(() -> new NotFoundException("Usuario no encontrada"));
+		User complainant = this.userService.findById(entity.getUserId()).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 		entity.setReview(review);
 		entity.setUser(complainant);
 		entity.setReason(entity.getReason());
 		entity.setComment(entity.getComment());
 		return this.complaintService.apply(entity);
+	}
+
+
+	@Override
+	public Page<Review> findReviewsForUser(String userName, Pageable pageble) throws NotFoundException {
+		User user = this.userService.findByUserName(userName).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+		List<Follower> followings = this.userService.findFollowingsByUserName(userName);
+		List<Long> listOfIds = followings.stream().map(Follower::getIdTo).collect(Collectors.toList());
+		listOfIds.add(user.getId());
+		// Hay que crear lista de los id que no se tienen que incluir (se podra hacer una vez mergeado a main)
+		return this.repository.listOfReviewOfUsers(listOfIds, pageble);
 	}
 	
 }

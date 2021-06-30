@@ -50,6 +50,18 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 		return ResponseEntity.ok(this.service.findAll(inAll, title, genre, description, points, name, userName, pageRequest));
 	}
 
+	@GetMapping("/getForUser/{userName}")
+	public ResponseEntity<?> getAllForUser(Pagination pagination, @PathVariable String userName) {
+		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
+		try {
+			return ResponseEntity.ok(this.service.findReviewsForUser(userName, pageRequest));
+		}catch(NotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+	
 	@PostMapping
 	public ResponseEntity<?> create(@Valid @RequestBody Review entity, BindingResult result) {
 		if(result.hasErrors()) {

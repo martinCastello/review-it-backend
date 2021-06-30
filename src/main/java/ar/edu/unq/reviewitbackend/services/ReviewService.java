@@ -53,4 +53,5 @@ public interface ReviewService extends CommonService<Review>{
 
 	List<Review> findAllByUser(User user);
 
+	Page<Review> findReviewsForUser(String userName, Pageable pageable) throws NotFoundException;
 }
