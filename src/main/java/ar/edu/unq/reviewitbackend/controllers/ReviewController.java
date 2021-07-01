@@ -27,6 +27,7 @@ import ar.edu.unq.reviewitbackend.entities.ComplaintReview;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.exceptions.ComplaintTypeException;
+import ar.edu.unq.reviewitbackend.exceptions.ReviewExistException;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
 import javassist.NotFoundException;
@@ -70,7 +71,7 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 		try{
 			Review oEntity = service.create(entity);
 			return ResponseEntity.ok(oEntity);
-		}catch(NotFoundException e) {
+		}catch(NotFoundException | ReviewExistException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}catch(Exception e) {
 			LOGGER.error(e.getMessage());

@@ -45,6 +45,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>{
 	@Query("SELECT r FROM Review r LEFT JOIN User u ON r.user = u WHERE u.isPrivate = 0 OR u.id IN :ids ORDER BY u.isPrivate DESC, r.id DESC")
 	Page<Review> listOfReviewOfUsers(@Param("ids")List<Long> userIds, Pageable pageable);
 
-	Optional<User> findByTitleAndUser(String title, User user);
+	Optional<Review> findByTitleAndUser(String title, User user);
 
 }

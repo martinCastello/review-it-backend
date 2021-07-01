@@ -188,7 +188,8 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	@Override
 	public Review create(Review entity) throws ReviewExistException, NotFoundException {
 		User user = this.userService.findById(entity.getUserId()).orElseThrow(() -> new NotFoundException("No se encuentra un usuario con ese id")); 
-		// this.repository.findByTitleAndUser(entity.getTitle(), user).orElseThrow(() -> new ReviewExistException(entity.getTitle()));
+		if(this.repository.findByTitleAndUser(entity.getTitle(), user).isPresent())
+			throw new ReviewExistException(entity.getTitle());
 		List<Genre> genres = this.genreRepository.findAllById(entity.getGenresId());
 		List<String> genresDescription = genres.stream().map(genre->genre.getName()).collect(Collectors.toList());
 		entity.setGenres(genresDescription);
