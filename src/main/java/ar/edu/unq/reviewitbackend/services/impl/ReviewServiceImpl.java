@@ -267,10 +267,15 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	public Page<Review> findReviewsForUser(String userName, Pageable pageble) throws NotFoundException {
 		User user = this.userService.findByUserName(userName).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 		List<User> followings = this.userService.findFollowingsByUserName(userName).stream().map(Follower::getTo).collect(Collectors.toList());
-		List<Long> listOfIds = followings.stream().map(User::getId).collect(Collectors.toList());
+		List<Long> userIdsIn = followings.stream().map(User::getId).collect(Collectors.toList());
 		// Hay que crear lista de los id que no se tienen que incluir (se podra hacer una vez mergeado a main)
-		listOfIds.add(user.getId());
-		return this.repository.listOfReviewOfUsers(listOfIds, pageble);
+		user.getBlockedUsers().stream().forEach(u -> System.out.println(u.getId())); 
+		userIdsIn.add(user.getId());
+		List<Long> userIdsOut = user.getBlockedUsers().stream().map(User::getId).collect(Collectors.toList());
+		List<Long> reviewIdsOut = user.getBlockedReviews().stream().map(Review::getId).collect(Collectors.toList());
+		userIdsOut.add(0L);
+		reviewIdsOut.add(0L);
+		return this.repository.listOfReviewOfUsers(userIdsIn, userIdsOut, reviewIdsOut, pageble);
 	}
 	
 }
