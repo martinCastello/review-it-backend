@@ -268,8 +268,6 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 		User user = this.userService.findByUserName(userName).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 		List<User> followings = this.userService.findFollowingsByUserName(userName).stream().map(Follower::getTo).collect(Collectors.toList());
 		List<Long> userIdsIn = followings.stream().map(User::getId).collect(Collectors.toList());
-		// Hay que crear lista de los id que no se tienen que incluir (se podra hacer una vez mergeado a main)
-		user.getBlockedUsers().stream().forEach(u -> System.out.println(u.getId())); 
 		userIdsIn.add(user.getId());
 		List<Long> userIdsOut = user.getBlockedUsers().stream().map(User::getId).collect(Collectors.toList());
 		List<Long> reviewIdsOut = user.getBlockedReviews().stream().map(Review::getId).collect(Collectors.toList());
