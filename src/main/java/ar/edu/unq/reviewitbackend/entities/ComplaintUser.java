@@ -6,7 +6,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -15,7 +14,6 @@ public class ComplaintUser extends Complaint{
 
 	@ManyToOne
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	@JsonIgnore
 	private User to;
 	
 	@NotNull
