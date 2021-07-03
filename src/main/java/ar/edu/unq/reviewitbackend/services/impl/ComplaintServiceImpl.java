@@ -2,6 +2,8 @@ package ar.edu.unq.reviewitbackend.services.impl;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ import ar.edu.unq.reviewitbackend.services.UserService;
 @Service
 public class ComplaintServiceImpl implements ComplaintService{
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ComplaintServiceImpl.class);
+	
 	@Value("${complaint.level}")
 	private Integer complaintLevel;
 	
@@ -41,6 +45,7 @@ public class ComplaintServiceImpl implements ComplaintService{
 	@Transactional
 	public ComplaintReview save(ComplaintReview entity) {
 		this.userService.save(entity.getUser());
+		this.userService.save(entity.getReview().getUser());
 		return this.complaintReviewRepository.save(entity);
 	}
 	
@@ -65,6 +70,7 @@ public class ComplaintServiceImpl implements ComplaintService{
 	@Transactional
 	public ComplaintUser save(ComplaintUser entity) {
 		this.userService.save(entity.getUser());
+		this.userService.save(entity.getTo());
 		return this.complaintUserRepository.save(entity);
 	}
 	
@@ -106,21 +112,24 @@ public class ComplaintServiceImpl implements ComplaintService{
 
 	@Override
 	public void removeIfPenaltyDateIsBeforeOrNull(User user, User to) {
-		for(ComplaintUser complaint : this.complaintUserRepository.findByUserAndTo(user, to)){
+		for(ComplaintUser complaint : this.complaintUserRepository.findByUserAndTo(user, to)) {
 			if(to.getLastPenaltyDate() == null || complaint.getCreatedDate().after(to.getLastPenaltyDate())) {
+				LOGGER.info("Al usuario " + to.getUserName() + " se le quita puntaje de penalidad por " + complaint.getReason().getLabel());
 				switch(complaint.getReason()) {
 					case NOT_INTERESTED:
 						break;
 					case SPOILER:
-						this.userService.addComplaint(to, -(Penalty.STERN.getNumber()));
+						this.userService.addComplaint(to, -Penalty.STERN.getNumber());
 						break;
 					case BAD_LANGUAGE:
-						this.userService.addComplaint(to, -(Penalty.MODERATE.getNumber()));
+						this.userService.addComplaint(to, -Penalty.MODERATE.getNumber());
 						break;
 					default:
 						break;
 				}
 				this.complaintUserRepository.deleteById(complaint.getId());
+				this.userService.save(user);
+				this.userService.save(to);
 			}
 		}
 	}

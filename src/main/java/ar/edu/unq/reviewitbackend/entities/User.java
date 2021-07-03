@@ -90,11 +90,6 @@ public class User extends Auditable{
 	@Column(name = "complaint_level")
 	private Integer complaintLevel = 0;
 	
-	@JsonIgnore
-	@LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy="to")
-    private List<ComplaintUser> complaints;
-	
 	private boolean blocked = false;
 	
 	@Column(name = "last_penalty_date")
@@ -223,14 +218,6 @@ public class User extends Auditable{
 		return this;
 	}
 
-	public List<ComplaintUser> getComplaints() {
-		return complaints;
-	}
-
-	public void addComplaint(ComplaintUser complaint) {
-		this.complaints.add(complaint);
-	}
-
 	public Date getLastPenaltyDate() {
 		return lastPenaltyDate;
 	}
@@ -260,7 +247,7 @@ public class User extends Auditable{
 	}
 
 	public boolean removeBlockedUser(User userToUnblock) {
-		return this.blockedUsers.remove(userToUnblock);
+		return this.blockedUsers.removeIf(u -> u.getId().equals(userToUnblock.getId()));
 	}
 
 	public boolean isBlocked() {

@@ -171,8 +171,10 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 	}
 
 	private void removeBlockedUser(User user, User userToUnblock) {
-		if(user.removeBlockedUser(userToUnblock))
+		if(user.removeBlockedUser(userToUnblock)) {
+			LOGGER.info("Usuario " + userToUnblock.getUserName() + " desbloqueado.");
 			complaintService.removeIfPenaltyDateIsBeforeOrNull(user, userToUnblock);
+		}
 	}
 
 	@Override
@@ -262,7 +264,7 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 
 	@Override
 	public User addBlockedUser(User user, User userToBlock) {
-		LOGGER.info("El usuario " + user.getUserName() + " se bloqueo al usuario " + userToBlock.getUserName());
+		LOGGER.info("El usuario " + user.getUserName() + " agrega a su lista de bloqueados al usuario " + userToBlock.getUserName());
 		return user.addBlockedUser(userToBlock);
 	}
 
