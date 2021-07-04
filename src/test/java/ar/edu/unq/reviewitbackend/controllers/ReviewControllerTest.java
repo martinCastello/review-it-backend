@@ -60,7 +60,7 @@ class ReviewControllerTest {
 	@Test
     @WithMockUser(username = "testUser")
     public void testPrivateEndpointReturnsOkWhenAuthorized() throws Exception {
-        MvcResult mvcResult = mvc.perform(get("/reviews"))
+        MvcResult mvcResult = mvc.perform(get("/reviews/user"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
@@ -125,9 +125,9 @@ class ReviewControllerTest {
 		Review entity = new Review("Travis", "Para que inserte una reseña en travis", 2, UserBuilder.createUser().build());
 		List<Review> allReviews = Arrays.asList(entity);
 		Page<Review> page = new PageImpl<Review>(allReviews);
-		when(reviewService.findAll("","","","",2,"",null,pageRequest)).thenReturn(page);
+		when(reviewService.findAll("","","","",2,"","gi021",null,pageRequest)).thenReturn(page);
 		
-	    mvc.perform(get("/reviews?points=2")
+	    mvc.perform(get("/reviews/gi021?points=2")
 	    	    .contentType(MediaType.APPLICATION_JSON))
 	    	    .andExpect(status().isOk());
 	}
