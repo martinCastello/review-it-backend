@@ -60,7 +60,9 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	@Autowired
 	private ComplaintService complaintService;
 	
-	public Page<Review> findAll(String inAll, String title, String genre, String description, Integer points, String nameOrLastName, String userName, Pageable pageable) {
+	public Page<Review> findAll(String inAll, String title, String genre, 
+			String description, Integer points, String nameOrLastName, 
+			String userName, String owner, Pageable pageable) throws NotFoundException {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cr = cb.createQuery(Long.class);
 		Root<Review> root = cr.from(Review.class);
@@ -135,6 +137,19 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 		List<Order> orders = this.buildOrder(orderByList, cb2, root2);
 		cr2.orderBy(orders).select(root2);
 		List<Review> content = em.createQuery(cr2).setFirstResult((int) pageable.getOffset()).setMaxResults(pageable.getPageSize()).getResultList();
+		/* Filter to user */
+		User user = this.userService.findByUserName(owner).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+		List<User> followings = this.userService.findFollowingsByUserName(owner).stream().map(Follower::getTo).collect(Collectors.toList());
+		List<Long> userIdsIn = followings.stream().map(User::getId).collect(Collectors.toList());
+		userIdsIn.add(user.getId());
+		List<Long> userIdsOut = user.getBlockedUsers().stream().map(User::getId).collect(Collectors.toList());
+		List<Long> reviewIdsOut = user.getBlockedReviews().stream().map(Review::getId).collect(Collectors.toList());
+		userIdsOut.add(0L);
+		reviewIdsOut.add(0L);
+		content = content.stream().filter(review -> !userIdsOut.contains(review.getUser().getId()) &&
+				!reviewIdsOut.contains(review.getId()) &&
+				(!review.getUser().getIsPrivate() || userIdsIn.contains(review.getUser().getId()))).collect(Collectors.toList());
+		/*************************************/
 		em.close();
 		return new PageImpl<>(content, pageable, total);
 	}
@@ -273,7 +288,9 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 		List<Long> reviewIdsOut = user.getBlockedReviews().stream().map(Review::getId).collect(Collectors.toList());
 		userIdsOut.add(0L);
 		reviewIdsOut.add(0L);
-		return this.repository.listOfReviewOfUsers(userIdsIn, userIdsOut, reviewIdsOut, pageble);
+		if(followings.isEmpty())
+			return this.repository.listOfReviewOfUsersNotFollowing(userIdsIn, userIdsOut, reviewIdsOut, pageble);
+		return this.repository.listOfReviewOfUsers(userIdsIn, reviewIdsOut, pageble);
 	}
 	
 }

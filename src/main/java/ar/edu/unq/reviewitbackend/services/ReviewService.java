@@ -16,7 +16,7 @@ import javassist.NotFoundException;
 
 public interface ReviewService extends CommonService<Review>{
 
-	Page<Review> findAll(String inAll, String title, String genre, String description, Integer points, String name, String userName, Pageable pageable);
+	Page<Review> findAll(String inAll, String title, String genre, String description, Integer points, String name, String userName, String owner, Pageable pageable) throws NotFoundException;
 	
 	Page<Review> findAllByTitle(String title, Pageable pageable);
 	

@@ -38,7 +38,7 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReviewController.class);
 	
-	@GetMapping
+	@GetMapping("/{owner}")
 	public ResponseEntity<?> getAllBy(Pagination pagination,
 			@RequestParam(value = "search", required = false) String inAll,
 			@RequestParam(value = "title", required = false) String title,
@@ -46,9 +46,18 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 			@RequestParam(value = "description", required = false) String description,
 			@RequestParam(value = "points", required = false) Integer points,
 			@RequestParam(value = "name", required = false) String name,
-			@RequestParam(value = "userName", required = false) String userName) {
+			@RequestParam(value = "userName", required = false) String userName,
+			@PathVariable String owner) {
 		final PageRequest pageRequest = Pagination.buildPageRequest(pagination);
-		return ResponseEntity.ok(this.service.findAll(inAll, title, genre, description, points, name, userName, pageRequest));
+		LOGGER.info("Usuarioa a realizar la busqueda de reseñas: " + owner);
+		try {
+			return ResponseEntity.ok(this.service.findAll(inAll, title, genre, description, points, name, userName, owner, pageRequest));
+		}catch(NotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+		
 	}
 
 	@GetMapping("/getForUser/{userName}")
