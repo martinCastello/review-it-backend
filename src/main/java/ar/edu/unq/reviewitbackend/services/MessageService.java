@@ -14,4 +14,6 @@ public interface MessageService {
 
 	Message save(Message message);
 
+	void delete(Message message);
+
 }

@@ -50,7 +50,12 @@ public class MessageServiceImpl implements MessageService {
 		Date date = new Date();
 		message.setCreatedDate(date);
 		message.setLastModifiedDate(date);
-        return this.repository.save(message);
+		return this.repository.save(message);
+    }
+    
+    @Transactional
+    public void delete(Message message) {
+    	this.repository.deleteById(message.getId());
     }
     
 }
