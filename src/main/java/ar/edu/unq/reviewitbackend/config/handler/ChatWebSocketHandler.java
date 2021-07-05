@@ -29,10 +29,10 @@ public class ChatWebSocketHandler extends TextWebSocketHandler{
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage message) throws Exception{
+        ObjectMapper mapper = new ObjectMapper();
+        Message messageParse = mapper.readValue(message.getPayload().toString(), Message.class);
+        this.messageService.save(messageParse);
         for(WebSocketSession wSSession: webSOcketSessions){
-            ObjectMapper mapper = new ObjectMapper();
-            Message messageParse = mapper.readValue(message.getPayload().toString(), Message.class);
-            this.messageService.save(messageParse);
             wSSession.sendMessage(message);
         }
     }
