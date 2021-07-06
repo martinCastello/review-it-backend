@@ -1,6 +1,7 @@
 package ar.edu.unq.reviewitbackend.services.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,9 +15,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.support.CronSequenceGenerator;
 import org.springframework.stereotype.Service;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
@@ -27,6 +30,7 @@ import ar.edu.unq.reviewitbackend.entities.Genre;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
 import ar.edu.unq.reviewitbackend.entities.User;
+import ar.edu.unq.reviewitbackend.exceptions.BlockedUserException;
 import ar.edu.unq.reviewitbackend.exceptions.ComplaintTypeException;
 import ar.edu.unq.reviewitbackend.exceptions.ReviewExistException;
 import ar.edu.unq.reviewitbackend.repositories.GenreRepository;
@@ -200,9 +204,13 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
         return this.repository.findDropdownInfo();
     }
 
+	@Value("${cron.expression}")
+	private String cronExpression;
+	
 	@Override
-	public Review create(Review entity) throws ReviewExistException, NotFoundException {
+	public Review create(Review entity) throws ReviewExistException, NotFoundException, BlockedUserException {
 		User user = this.userService.findById(entity.getUserId()).orElseThrow(() -> new NotFoundException("No se encuentra un usuario con ese id")); 
+		this.analyzeForCreateReview(user);
 		if(this.repository.findByTitleAndUser(entity.getTitle(), user).isPresent())
 			throw new ReviewExistException(entity.getTitle());
 		List<Genre> genres = this.genreRepository.findAllById(entity.getGenresId());
@@ -210,6 +218,28 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 		entity.setGenres(genresDescription);
 		entity.setUser(user);
 		return this.save(entity);
+	}
+	
+	private void analyzeForCreateReview(User user) throws BlockedUserException {
+		if(user.isBlocked()) {
+			long time = user.getLastPenaltyDate().getTime() + 1000 * this.timeOffsetInSeconds;
+			CronSequenceGenerator generator = new CronSequenceGenerator(cronExpression);
+			Date nextRunDate = generator.next(new Date());
+			if(time < nextRunDate.getTime())
+				throw new BlockedUserException(nextRunDate.getTime());
+			else {
+				Date dateTime = new Date(time);
+				if(dateTime.getHours() < nextRunDate.getHours() ||
+						(dateTime.getHours() == nextRunDate.getHours() && dateTime.getMinutes() < nextRunDate.getMinutes())) {
+					dateTime.setHours(nextRunDate.getHours());
+				}else {
+					dateTime.setHours(nextRunDate.getHours()+24);
+				}
+				dateTime.setMinutes(nextRunDate.getMinutes());
+				dateTime.setSeconds(nextRunDate.getSeconds());
+				throw new BlockedUserException(dateTime.getTime());
+			}
+		}
 	}
 
 	@Override

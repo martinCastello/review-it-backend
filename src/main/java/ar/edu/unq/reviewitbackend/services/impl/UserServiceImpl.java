@@ -23,7 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
 import ar.edu.unq.reviewitbackend.entities.ComplaintUser;
@@ -44,9 +43,6 @@ import javassist.NotFoundException;
 public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> implements UserService{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
-	
-	@Value("${time.offset.in.seconds}")
-	private long timeOffsetInSeconds;
 	
 	@Value("${complaint.level}")
 	private Integer complaintLevel;
@@ -290,10 +286,9 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 	}
 
 	@Override
-	@Transactional
 	public void resetComplaintCountForSchedule() {
 		// Date lastUpdated = new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * timeOffsetInDays);
-		Date lastUpdated = new Date(new Date().getTime() - 1000 * timeOffsetInSeconds);
+		Date lastUpdated = new Date(new Date().getTime() - 1000 * this.timeOffsetInSeconds);
 		List<User> userList = this.repository.findByBlockedIsTrueAndLastPenaltyDateBefore(lastUpdated);
 		for(User user : userList) {
 			user.setBlocked(false);

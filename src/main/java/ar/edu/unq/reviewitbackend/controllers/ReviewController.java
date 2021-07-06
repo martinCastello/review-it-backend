@@ -7,7 +7,6 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +26,10 @@ import ar.edu.unq.reviewitbackend.entities.Commentary;
 import ar.edu.unq.reviewitbackend.entities.ComplaintReview;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
-import ar.edu.unq.reviewitbackend.entities.User;
+import ar.edu.unq.reviewitbackend.exceptions.BlockedUserException;
 import ar.edu.unq.reviewitbackend.exceptions.ComplaintTypeException;
 import ar.edu.unq.reviewitbackend.exceptions.ReviewExistException;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
-import ar.edu.unq.reviewitbackend.services.UserService;
 import ar.edu.unq.reviewitbackend.utils.Pagination;
 import javassist.NotFoundException;
 
@@ -40,9 +38,6 @@ import javassist.NotFoundException;
 public class ReviewController extends CommonController<Review, ReviewService> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReviewController.class);
-	
-	@Autowired
-	private UserService userService;
 
 	@GetMapping("/{owner}")
 	public ResponseEntity<?> getAllBy(Pagination pagination,
@@ -84,13 +79,9 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 			return this.validar(result);
 		}
 		try{
-			User user = userService.findById(entity.getUserId()).get();
-			if(user.isBlocked()){
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
 			Review oEntity = service.create(entity);
 			return ResponseEntity.ok(oEntity);
-		}catch(NotFoundException | ReviewExistException e) {
+		}catch(NotFoundException | ReviewExistException | BlockedUserException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}catch(Exception e) {
 			LOGGER.error(e.getMessage());
