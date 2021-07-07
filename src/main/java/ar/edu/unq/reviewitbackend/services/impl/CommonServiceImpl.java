@@ -9,6 +9,7 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,6 +23,9 @@ public class CommonServiceImpl<E, R extends JpaRepository<E, Long>> implements C
 	
 	@Autowired
 	protected R repository;
+	
+	@Value("${time.offset.in.seconds}")
+	protected long timeOffsetInSeconds;
 	
 	public Page<E> findAll(Pageable pageable) {
 		return this.repository.findAll(pageable);

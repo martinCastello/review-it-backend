@@ -26,6 +26,7 @@ import ar.edu.unq.reviewitbackend.entities.Commentary;
 import ar.edu.unq.reviewitbackend.entities.ComplaintReview;
 import ar.edu.unq.reviewitbackend.entities.Likes;
 import ar.edu.unq.reviewitbackend.entities.Review;
+import ar.edu.unq.reviewitbackend.exceptions.BlockedUserException;
 import ar.edu.unq.reviewitbackend.exceptions.ComplaintTypeException;
 import ar.edu.unq.reviewitbackend.exceptions.ReviewExistException;
 import ar.edu.unq.reviewitbackend.services.ReviewService;
@@ -37,7 +38,7 @@ import javassist.NotFoundException;
 public class ReviewController extends CommonController<Review, ReviewService> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReviewController.class);
-	
+
 	@GetMapping("/{owner}")
 	public ResponseEntity<?> getAllBy(Pagination pagination,
 			@RequestParam(value = "search", required = false) String inAll,
@@ -80,7 +81,7 @@ public class ReviewController extends CommonController<Review, ReviewService> {
 		try{
 			Review oEntity = service.create(entity);
 			return ResponseEntity.ok(oEntity);
-		}catch(NotFoundException | ReviewExistException e) {
+		}catch(NotFoundException | ReviewExistException | BlockedUserException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}catch(Exception e) {
 			LOGGER.error(e.getMessage());
