@@ -292,9 +292,7 @@ public class UserServiceImpl extends CommonServiceImpl<User, UserRepository> imp
 		List<User> userList = this.repository.findByBlockedIsTrueAndLastPenaltyDateBefore(lastUpdated);
 		for(User user : userList) {
 			user.setBlocked(false);
-		}
-		if(!userList.isEmpty()) {
-			this.saveAll(userList);
+			this.save(user);
 		}
 	}
 	
