@@ -3,7 +3,7 @@ package ar.edu.unq.reviewitbackend.entities.enums;
 public enum ComplaintReason {
 	NOT_INTERESTED("No me interesa"),
 	SPOILER("Spoiler"),
-	BAD_LANGUAGE("Lneguaje inapropiado");
+	BAD_LANGUAGE("Lenguaje inapropiado");
 	
 	private String label;
 	

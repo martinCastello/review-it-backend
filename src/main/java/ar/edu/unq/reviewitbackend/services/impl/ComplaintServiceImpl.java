@@ -1,6 +1,9 @@
 package ar.edu.unq.reviewitbackend.services.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,9 +108,11 @@ public class ComplaintServiceImpl implements ComplaintService{
 	}
 
 	private boolean existComplaint(User user, User to, ComplaintReason reason) {
-		Optional<ComplaintUser> complaint = this.complaintUserRepository.findByUserAndToAndReason(user, to, reason);
-		return complaint.isPresent() 
-				&& (to.getLastPenaltyDate() == null || complaint.get().getCreatedDate().after(to.getLastPenaltyDate()));
+		List<ComplaintUser> complaints = this.complaintUserRepository.findByUserAndToAndReason(user, to, reason);
+		List<ComplaintUser> complaintsAfter = new ArrayList<>();
+		if(!complaints.isEmpty() && to.getLastPenaltyDate() != null)
+			complaintsAfter.addAll(complaints.stream().filter(complaint -> complaint.getCreatedDate().after(to.getLastPenaltyDate())).collect(Collectors.toList()));
+		return !complaints.isEmpty() && (to.getLastPenaltyDate() == null || !complaintsAfter.isEmpty());
 	}
 
 	@Override
