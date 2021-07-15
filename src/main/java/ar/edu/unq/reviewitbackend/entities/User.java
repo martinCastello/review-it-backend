@@ -95,6 +95,7 @@ public class User extends Auditable{
 	@Column(name = "last_penalty_date")
 	private Date lastPenaltyDate;
 	
+	@JsonIgnore
 	@ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
@@ -103,6 +104,7 @@ public class User extends Auditable{
     		  inverseJoinColumns = @JoinColumn(name = "user_blocked_id"))
     private List<User> blockedUsers;
     
+	@JsonIgnore
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
