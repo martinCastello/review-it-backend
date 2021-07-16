@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.support.CronSequenceGenerator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ar.edu.unq.reviewitbackend.dto.DropdownInfo;
 import ar.edu.unq.reviewitbackend.entities.Commentary;
@@ -257,9 +258,11 @@ public class ReviewServiceImpl extends CommonServiceImpl<Review, ReviewRepositor
 	}
 
 	@Override
+	@Transactional
 	public void deleteById(Long id) throws NotFoundException {
 		Review entity = this.findById(id).orElseThrow(() -> new NotFoundException("La reseña que pretende eliminar no se encuentra"));
-        this.repository.delete(entity);
+		this.repository.deleteReviewBlockedById(id);
+		this.repository.delete(entity);
 	}
 
 	@Override

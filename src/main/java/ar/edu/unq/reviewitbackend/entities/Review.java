@@ -20,6 +20,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import ar.edu.unq.reviewitbackend.utils.StringListConverter;
@@ -71,6 +72,11 @@ public class Review extends Auditable {
 	
 	@Column(columnDefinition = "TEXT")
 	private String overview;
+	
+	@JsonIgnore
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ComplaintReview> complaints;
 
 	public Review () {}
 	
